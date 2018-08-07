@@ -27,7 +27,7 @@ BEGIN
                 EXECUTE [dbo].[GetSrvConfigurations] @SID;
                 EXECUTE [dbo].[CheckSrvSQLLogins] @SID;
                 EXECUTE [dbo].[CollectSrvSQLAdmins] @SID;
-                EXECUTE [dbo].[Collectlogins] @SID;
+                EXECUTE [dbo].[CollectSrvPrincipals] @SID;
 
             END TRY
             BEGIN CATCH
