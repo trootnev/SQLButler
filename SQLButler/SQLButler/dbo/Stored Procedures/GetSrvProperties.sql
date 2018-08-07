@@ -15,6 +15,7 @@ BEGIN
     SET @SQLStr = '
 DECLARE @clustered NVARCHAR (10)
 DECLARE @ishadr NVARCHAR(10)
+DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (50))+'
 SET @clustered = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
 Select CAST(SERVERPROPERTY(''''isClustered'''') as NVARCHAR(10))
 
@@ -23,13 +24,45 @@ SET @ishadr = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' +
 Select CAST(SERVERPROPERTY(''''ishadrenabled'''') as NVARCHAR(10))
 
 ''' + '))
+DECLARE @collation NVARCHAR(255)
+
+SET @collation = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+Select CAST(SERVERPROPERTY(''''collation'''') as NVARCHAR(25))
+
+''' + '))
+
+IF NOT EXISTS(SELECT 1 
+				FROM [dbo].[InstanceProperties] ip
+				JOIN dbo.InstancePropertyTypes ipt on ip.PropertyTypeID = ipt.PropertyTypeID
+				 WHERE ip.SrvID = @SrvID  and ipt.PropertyTypeName = ''InstanceCollation''
+				 and PropertyStringValue = @collation and ip.IsCurrent = 1) 
+BEGIN
+UPDATE [dbo].[InstanceProperties] 
+SET IsCurrent = 0
+WHERE PropertyTypeID = (Select PropertyTypeID FROM dbo.InstancePropertyTypes where PropertyTypeName = ''InstanceCollation'')
+AND SrvID = @SrvID
+AND isCurrent = 1
+
+INSERT INTO [dbo].[InstanceProperties]
+           (
+           [SrvID]
+           ,[PropertyTypeID]
+           ,[PropertyStringValue]
+           )
+   Select
+		@SrvID
+		,(SELECT PropertyTypeID FROM dbo.InstancePropertyTypes WHERE PropertyTypeName =''InstanceCollation'')
+		,PropertyStringValue = @collation
+
+END
+    
 
 UPDATE Servers
 Set
 IsClustered = @clustered,
 IsHADREnabled = @ishadr
 
-WHERE ServID = ' + CAST (@SRVID AS NVARCHAR (50));
+WHERE ServID = @SrvID';
     BEGIN TRY
         EXECUTE sp_executesql @SQLStr;
     END TRY

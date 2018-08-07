@@ -129,6 +129,9 @@
     <Build Include="dbo\Stored Procedures\WriteErrorLog.sql" />
     <Build Include="dbo\Tables\SrvRoleMembers.sql" />
     <Build Include="dbo\Views\vSrvRoleMembers.sql" />
+    <Build Include="dbo\Tables\InstancePropertyTypes.sql" />
+    <Build Include="dbo\Tables\InstanceProperties.sql" />
+    <Build Include="dbo\Views\vInstanceProperties.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SQLButler.refactorlog" />
