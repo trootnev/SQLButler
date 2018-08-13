@@ -13,33 +13,71 @@ BEGIN
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     SET @SQLStr = '
+DECLARE @t TABLE (pName nvarchar(255), [Value] nvarchar(255))
 DECLARE @clustered NVARCHAR (10)
 DECLARE @ishadr NVARCHAR(10)
 DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (50))+'
-SET @clustered = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
-Select CAST(SERVERPROPERTY(''''isClustered'''') as NVARCHAR(10))
+
+INSERT @t (pName, Value)
+(SELECT pName,Value FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+
+select distinct ''''LocalTcpPort'''' [pName],CAST(local_tcp_port as nvarchar(255))  as [Value]
+	from sys.dm_exec_connections 
+		where local_net_address is not null
+			AND protocol_type = ''''TSQL''''
+			AND net_transport = ''''TCP''''
+	UNION ALL
+			
+	select ''''SQLServerSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [Value]
+		from sys.dm_server_services
+			where  filename like ''''%sqlservr.exe%'''' 
+	UNION ALL 
+
+	Select 
+	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [Value]
+		from sys.dm_server_services
+			where  filename like ''''%SQLAGENT.EXE%'''' 
+
+	UNION ALL 
+		SELECT ''''InstanceCollation'''' as [pName], CAST(ServerProperty(''''collation'''') as nvarchar(255))   as [Value]
+
+	UNION ALL
+		SELECT ''''IsHADREnabled'''' as [pName], CAST(ServerProperty(''''ishadrenabled'''') as nvarchar(255))   as [Value]
+
+	UNION ALL 
+		SELECT ''''isClustered'''' as [pName], CAST(ServerProperty(''''isClustered'''') as nvarchar(255))   as [Value]
 
 ''' + '))
-SET @ishadr = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
-Select CAST(SERVERPROPERTY(''''ishadrenabled'''') as NVARCHAR(10))
 
-''' + '))
-DECLARE @collation NVARCHAR(255)
 
-SET @collation = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
-Select CAST(SERVERPROPERTY(''''collation'''') as NVARCHAR(25))
+MERGE [dbo].[InstancePropertyTypes] AS TARGET
+USING (SELECT pName from @t) as SOURCE(pName)
+ON (TARGET.PropertyTypeName = SOURCE.pName)
+WHEN NOT MATCHED THEN INSERT (PropertyTypeName)
+VALUES (Source.pName); 
 
-''' + '))
+DECLARE @p nvarchar(255),
+@v nvarchar(255)
+DECLARE PAR CURSOR
+FOR SELECT pName, Value FROM @t
+
+OPEN PAR
+
+FETCH NEXT FROM PAR
+INTO @p,@v
+
+WHILE @@FETCH_STATUS = 0
+BEGIN 
 
 IF NOT EXISTS(SELECT 1 
 				FROM [dbo].[InstanceProperties] ip
 				JOIN dbo.InstancePropertyTypes ipt on ip.PropertyTypeID = ipt.PropertyTypeID
-				 WHERE ip.SrvID = @SrvID  and ipt.PropertyTypeName = ''InstanceCollation''
-				 and PropertyStringValue = @collation and ip.IsCurrent = 1) 
+				 WHERE ip.SrvID = @SrvID  and ipt.PropertyTypeName = @p
+				 and PropertyStringValue = @v and ip.IsCurrent = 1) 
 BEGIN
 UPDATE [dbo].[InstanceProperties] 
 SET IsCurrent = 0
-WHERE PropertyTypeID = (Select PropertyTypeID FROM dbo.InstancePropertyTypes where PropertyTypeName = ''InstanceCollation'')
+WHERE PropertyTypeID = (Select PropertyTypeID FROM dbo.InstancePropertyTypes where PropertyTypeName = @p)
 AND SrvID = @SrvID
 AND isCurrent = 1
 
@@ -51,11 +89,21 @@ INSERT INTO [dbo].[InstanceProperties]
            )
    Select
 		@SrvID
-		,(SELECT PropertyTypeID FROM dbo.InstancePropertyTypes WHERE PropertyTypeName =''InstanceCollation'')
-		,PropertyStringValue = @collation
+		,(SELECT PropertyTypeID FROM dbo.InstancePropertyTypes WHERE PropertyTypeName =@p)
+		,PropertyStringValue = @v
 
 END
-    
+
+FETCH NEXT FROM PAR
+INTO @p,@v
+
+END
+
+CLOSE PAR
+DEALLOCATE PAR
+
+SELECT @clustered = Value FROM @t WHERE pName = ''IsClustered''
+SELECT @ishadr = Value FROM @t WHERE pName = ''IsHADREnabled''
 
 UPDATE Servers
 Set
@@ -64,12 +112,13 @@ IsHADREnabled = @ishadr
 
 WHERE ServID = @SrvID';
     BEGIN TRY
-        EXECUTE sp_executesql @SQLStr;
+        EXEC(@SQLStr);
     END TRY
     BEGIN CATCH
         SET @ERROR_CODE = ERROR_NUMBER();
         SET @ERROR_MESS = ERROR_MESSAGE();
         PRINT @SQLStr;
+		PRINT @ERROR_MESS
         EXECUTE dbo.WriteErrorLog 6, @SRVID, @ERROR_CODE, @ERROR_MESS;
     END CATCH
 END
