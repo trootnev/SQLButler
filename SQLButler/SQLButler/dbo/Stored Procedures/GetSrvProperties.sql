@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[GetSrvProperties]
 @SRVID INT NULL
+,@DEBUG bit = 0
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -13,39 +14,77 @@ BEGIN
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     SET @SQLStr = '
-DECLARE @t TABLE (pName nvarchar(255), [Value] nvarchar(255))
+DECLARE @t TABLE (pName nvarchar(255), [pValue] nvarchar(255))
 DECLARE @clustered NVARCHAR (10)
 DECLARE @ishadr NVARCHAR(10)
 DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (50))+'
 
-INSERT @t (pName, Value)
-(SELECT pName,Value FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+INSERT @t (pName, pValue)
+(SELECT pName,pValue FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
 
-select distinct ''''LocalTcpPort'''' [pName],CAST(local_tcp_port as nvarchar(255))  as [Value]
+SET FMTONLY OFF; SET NOCOUNT ON;
+
+
+DECLARE @model TABLE (logdate datetime
+		,ProcessInfo nvarchar(255)
+		,[Text] nvarchar(255))
+DECLARE @result TABLE (pName NVARCHAR(255)
+						,pValue NVARCHAR(255))
+
+INSERT @result (pName, pValue)
+	(select distinct ''''LocalTcpPort'''' [pName],CAST(local_tcp_port as nvarchar(255))  as [pValue]
 	from sys.dm_exec_connections 
 		where local_net_address is not null
 			AND protocol_type = ''''TSQL''''
 			AND net_transport = ''''TCP''''
 	UNION ALL
 			
-	select ''''SQLServerSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [Value]
+	select ''''SQLServerSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
 		from sys.dm_server_services
 			where  filename like ''''%sqlservr.exe%'''' 
 	UNION ALL 
 
 	Select 
-	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [Value]
+	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
 		from sys.dm_server_services
 			where  filename like ''''%SQLAGENT.EXE%'''' 
 
 	UNION ALL 
-		SELECT ''''InstanceCollation'''' as [pName], CAST(ServerProperty(''''collation'''') as nvarchar(255))   as [Value]
+		SELECT ''''InstanceCollation'''' as [pName], CAST(ServerProperty(''''collation'''') as nvarchar(255))   as [pValue]
 
 	UNION ALL
-		SELECT ''''IsHADREnabled'''' as [pName], CAST(ServerProperty(''''ishadrenabled'''') as nvarchar(255))   as [Value]
+		SELECT ''''IsHADREnabled'''' as [pName], CAST(ServerProperty(''''ishadrenabled'''') as nvarchar(255))   as [pValue]
 
 	UNION ALL 
-		SELECT ''''isClustered'''' as [pName], CAST(ServerProperty(''''isClustered'''') as nvarchar(255))   as [Value]
+		SELECT ''''isClustered'''' as [pName], CAST(ServerProperty(''''isClustered'''') as nvarchar(255))   as [pValue]
+	UNION ALL
+		SELECT ''''CpuCount'''' as pName 
+			,CAST(cpu_count  as NVARCHAR(255)) as pValue
+			FROM sys.dm_os_sys_info
+			UNION ALL
+		SELECT ''''HyperthreadRatio'''' as pName
+			,CAST(hyperthread_ratio  as NVARCHAR(255)) as pValue
+			 FROM sys.dm_os_sys_info
+			 UNION ALL
+		SELECT ''''MaxWorkers'''' as pName
+			,CAST(max_workers_count as NVARCHAR(255)) as pValue
+			FROM sys.dm_os_sys_info	
+		
+		)
+
+		INSERT @model (logdate
+				,ProcessInfo
+				, Text)
+	EXEC xp_readerrorlog 0, 1, N''''System Model''''
+
+	INSERT @result (pName, pValue)
+	SELECT ''''SystemModel'''' as [pName]
+		,[Text] as pValue
+	FROM @model
+
+	SELECT pName, pValue
+		FROM @result
+
 
 ''' + '))
 
@@ -59,7 +98,7 @@ VALUES (Source.pName);
 DECLARE @p nvarchar(255),
 @v nvarchar(255)
 DECLARE PAR CURSOR
-FOR SELECT pName, Value FROM @t
+FOR SELECT pName, pValue FROM @t
 
 OPEN PAR
 
@@ -102,8 +141,8 @@ END
 CLOSE PAR
 DEALLOCATE PAR
 
-SELECT @clustered = Value FROM @t WHERE pName = ''IsClustered''
-SELECT @ishadr = Value FROM @t WHERE pName = ''IsHADREnabled''
+SELECT @clustered = pValue FROM @t WHERE pName = ''IsClustered''
+SELECT @ishadr = pValue FROM @t WHERE pName = ''IsHADREnabled''
 
 UPDATE Servers
 Set
@@ -111,6 +150,8 @@ IsClustered = @clustered,
 IsHADREnabled = @ishadr
 
 WHERE ServID = @SrvID';
+   IF @debug = 0 
+   BEGIN
     BEGIN TRY
         EXEC(@SQLStr);
     END TRY
@@ -121,5 +162,8 @@ WHERE ServID = @SrvID';
 		PRINT @ERROR_MESS
         EXECUTE dbo.WriteErrorLog 6, @SRVID, @ERROR_CODE, @ERROR_MESS;
     END CATCH
+	END
+	ELSE
+	PRINT @SQLStr
 END
 
