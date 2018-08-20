@@ -21,7 +21,8 @@ BEGIN
                      INNER JOIN
                      dbo.Servers AS s
                      ON s.ServID = db.SrvID
-            WHERE    s.active = -1
+            WHERE    s.active = 1
+			AND s.GetVersState = 1
             ORDER BY SrvID;
     OPEN DB;
     FETCH NEXT FROM DB INTO @DBID, @DB, @SRVID, @connstr, @SERVNAME;

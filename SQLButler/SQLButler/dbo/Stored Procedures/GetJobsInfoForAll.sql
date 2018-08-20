@@ -19,8 +19,9 @@ BEGIN
                      INNER JOIN
                      dbo.Servers AS s
                      ON SJ.srvid = s.ServID
-            WHERE    s.active = -1
+            WHERE    s.active = 1
                      AND sj.CatOverride = 0
+					 AND s.GetVersState = 1
             ORDER BY sj.srvid;
     OPEN JOBS;
     FETCH NEXT FROM JOBS INTO @SRVID, @JID, @CONNSTR, @SERVNAME;

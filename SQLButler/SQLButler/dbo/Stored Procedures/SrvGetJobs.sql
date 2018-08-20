@@ -4,7 +4,9 @@ AS
 BEGIN
     SET NOCOUNT ON;
     DECLARE @SQLSTR AS NVARCHAR (MAX);
-    DECLARE @Connstr AS NVARCHAR (MAX);
+    DECLARE @Connstr AS NVARCHAR (1000);
+	 DECLARE @ERROR_CODE AS INT;
+    DECLARE @ERROR_MESS AS NVARCHAR (400);
     SET @Connstr = (SELECT connstr
                     FROM   Servers
                     WHERE  ServID = @SRVID);
@@ -43,6 +45,23 @@ END
 CLOSE JOBS;
 DEALLOCATE JOBS
 ';
-    EXECUTE sp_executesql @SQLSTR;
+    BEGIN TRY
+        EXECUTE sp_executesql @SQLStr;
+    END TRY
+    BEGIN CATCH
+                SET @ERROR_CODE = ERROR_NUMBER();
+                SET @ERROR_MESS = ERROR_MESSAGE();
+                EXECUTE dbo.WriteErrorLog 4, @SRVID, @ERROR_CODE, @ERROR_MESS;
+                UPDATE DBO.Servers
+                SET    GetJobsState     = ERROR_NUMBER(),
+                       GetJobsStateDesc = ERROR_MESSAGE()
+                WHERE  ServID = @SRVID;
+            END CATCH
+            IF @ERROR_CODE = 0
+                UPDATE DBO.Servers
+                SET    GetJobsState     = 1,
+                       GetJobsStateDesc = 'Success'
+                WHERE  ServID = @SRVID;
+    
 END
 

@@ -132,6 +132,7 @@
     <Build Include="dbo\Tables\InstancePropertyTypes.sql" />
     <Build Include="dbo\Tables\InstanceProperties.sql" />
     <Build Include="dbo\Views\vInstanceProperties.sql" />
+    <Build Include="dbo\Stored Procedures\PingInstance.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SQLButler.refactorlog" />

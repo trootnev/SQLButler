@@ -24,6 +24,7 @@
     [GetJobsDetailsState]     INT            NULL,
     [GetJobsDetailsStateDesc] NVARCHAR (150) NULL,
     [Timestamp]               ROWVERSION     NULL,
+    [ConnectionTimeout] INT NULL DEFAULT 5, 
     CONSTRAINT [PK_Servers] PRIMARY KEY CLUSTERED ([ServID] ASC),
     CONSTRAINT [FK_Servers_Cluster] FOREIGN KEY ([ClusterID]) REFERENCES [dbo].[Cluster] ([Clusterid]),
     CONSTRAINT [FK_Servers_Contacts] FOREIGN KEY ([OwnerID]) REFERENCES [dbo].[Contacts] ([ContactID]),

@@ -16,7 +16,7 @@ BEGIN
         BEGIN
             SET @ERROR = 0;
             SET @Connstr = (SELECT connstr
-                            FROM   Servers AS s
+                            FROM   dbo.Servers AS s
                             WHERE  s.ServID = @SRVID);
             SET @SQLStr = '
 (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''select @@version''' + '))

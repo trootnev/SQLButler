@@ -27,7 +27,7 @@ WHERE ServID = ' + CAST (@SRVID AS NVARCHAR (50));
     BEGIN CATCH
         SET @ERROR_CODE = ERROR_NUMBER();
         SET @ERROR_MESS = ERROR_MESSAGE();
-        PRINT @SQLStr;
+        --PRINT @SQLStr;
         UPDATE DBO.Servers
         SET    GetVersState     = ERROR_NUMBER(),
                GetVersStateDesc = ERROR_MESSAGE()

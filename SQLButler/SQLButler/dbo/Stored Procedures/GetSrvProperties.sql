@@ -158,7 +158,7 @@ WHERE ServID = @SrvID';
     BEGIN CATCH
         SET @ERROR_CODE = ERROR_NUMBER();
         SET @ERROR_MESS = ERROR_MESSAGE();
-        PRINT @SQLStr;
+        --PRINT @SQLStr;
 		PRINT @ERROR_MESS
         EXECUTE dbo.WriteErrorLog 6, @SRVID, @ERROR_CODE, @ERROR_MESS;
     END CATCH
