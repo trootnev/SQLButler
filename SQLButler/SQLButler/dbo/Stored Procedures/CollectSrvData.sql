@@ -35,7 +35,7 @@ BEGIN
 						EXECUTE [dbo].[CheckSrvSQLLogins] @SID;
 						EXECUTE [dbo].[CollectSrvSQLAdmins] @SID;
 						EXECUTE [dbo].[CollectSrvPrincipals] @SID;
-
+						EXECUTE [dbo].[CollectSrvVolumes] @SID;
 					END TRY
 					BEGIN CATCH
 						SET @ERROR = 'Server ' + @SERVNAME + ' had troubles:' + ERROR_MESSAGE();
