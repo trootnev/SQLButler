@@ -46,3 +46,18 @@ ON (TARGET.id = SOURCE.id)
 
 WHEN NOT MATCHED THEN INSERT (id,RM)
 VALUES (SOURCE.id, SOURCE.RM);
+
+
+
+DECLARE @Settings TABLE (Name nvarchar(255), IntValue int, StringValue nvarchar(255), [Description] nvarchar (255))
+
+INSERT INTO @Settings
+VALUES 
+('ConfRetentionDays', 365,NULL,'How long does the collected data lives')
+
+MERGE dbo.Settings as TARGET
+USING (Select * from @Settings) as SOURCE (Name, IntValue,StringValue,Description)
+ON TARGET.Name = SOURCE.Name
+
+WHEN NOT MATCHED THEN INSERT (Name, IntValue,StringValue,Description)
+VALUES (SOURCE.Name, SOURCE.IntValue, SOURCE.StringValue, SOURCE.Description);

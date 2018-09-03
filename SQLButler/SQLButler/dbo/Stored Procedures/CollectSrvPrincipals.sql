@@ -60,12 +60,27 @@ SELECT @ID
            ,[SID]
 
 	FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
-	
-select ''''MSDB role'''' as [RoleType],dbp1.name as [Role],dbp2.name as [Member],sl.name as [Login], sl.sid as [SID] 
- from msdb.sys.database_role_members dbrm
-join msdb.sys.database_principals dbp1 on dbp1.principal_id = dbrm.role_principal_id and dbp1.type= ''''R''''
+SET NOCOUNT ON
+DECLARE @t table (RoleType nvarchar(50),
+					[Role] nvarchar(255), 
+					[Member] nvarchar(255),
+					[Login] nvarchar(255), 
+					[SID] varbinary(255))
+INSERT @t 
+EXEC sp_MSforeachdb ''''
+USE [?]
+select db_name() as [RoleType],dbp1.name as [Role],dbp2.name as [Member],sl.name as [Login], sl.sid as [SID] 
+from msdb.sys.database_role_members dbrm
+join msdb.sys.database_principals dbp1 on dbp1.principal_id = dbrm.role_principal_id and dbp1.type= ''''''''R''''''''
 join msdb.sys.database_principals dbp2 on dbp2.principal_id = dbrm.member_principal_id
 join msdb.sys.syslogins sl on sl.sid = dbp2.sid
+''''
+select [RoleType],
+		[Role],
+		[Member],
+		[Login],
+		[SID]
+		 from @t 
 
 UNION ALL
 
@@ -73,6 +88,8 @@ select ''''Server Role'''' as [RoleType],dbp1.name as [Role],dbp2.name as [Membe
 join sys.server_principals dbp1 on dbp1.principal_id = dbrm.role_principal_id and dbp1.type= ''''R''''
 join sys.server_principals dbp2 on dbp2.principal_id = dbrm.member_principal_id
 join sys.syslogins sl on sl.sid = dbp2.sid
+	
+	
 	''' + ')
 
 ';
