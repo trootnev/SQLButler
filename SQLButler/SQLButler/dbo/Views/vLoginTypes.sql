@@ -3,5 +3,5 @@ AS
 SELECT [LoginTypeID],
        [LoginTypeName],
        [LoginTypeDesc]
-FROM   [dbo].[LoginTypes];
+FROM   [dbo].[LoginTypes] (nolock);
 

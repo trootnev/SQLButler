@@ -7,9 +7,11 @@ SELECT j.collectionDate,
        j.[sid],
        j.[Comment],
        j.[Owner],
-       j.srvid
-FROM   SrvLogins AS j
+       j.srvid,
+	   j.is_current
+
+FROM   SrvLogins (nolock) AS j
        INNER JOIN
-       Servers AS s
+       Servers (nolock) AS s
        ON j.srvid = s.ServID;
 

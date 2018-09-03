@@ -6,6 +6,7 @@
     [LoginName]      NVARCHAR (50)    NULL,
     [Pass]           NVARCHAR (50)    NULL,
     [Comment]        NVARCHAR (150)   NULL,
-    [Owner]          NVARCHAR (150)   NULL
+    [Owner]          NVARCHAR (150)   NULL, 
+    [is_current] BIT NOT NULL DEFAULT 1
 );
 

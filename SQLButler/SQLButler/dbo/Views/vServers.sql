@@ -20,11 +20,11 @@ SELECT dbo.Servers.ServID,
        dbo.Servers.GetJobsStateDesc,
        dbo.Servers.GetJobsDetailsState,
        dbo.Servers.GetJobsDetailsStateDesc
-FROM   dbo.Servers
+FROM   dbo.Servers (nolock)
        LEFT OUTER JOIN
-       dbo.SrvGroup
+       dbo.SrvGroup (nolock)
        ON dbo.Servers.ServGroup = dbo.SrvGroup.sgid
        LEFT OUTER JOIN
-       dbo.Contacts AS c
+       dbo.Contacts (nolock) AS c
        ON dbo.Servers.OwnerID = c.ContactID;
 

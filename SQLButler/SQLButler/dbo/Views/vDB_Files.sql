@@ -14,11 +14,11 @@ SELECT dbo.DbFiles.name AS [Логическое имя],
        is_percent_growth,
        S.ServName,
        SrvDB.DbName
-FROM   dbo.DbFiles
+FROM   dbo.DbFiles (nolock)
        INNER JOIN
-       dbo.SrvDB
+       dbo.SrvDB (nolock)
        ON dbo.DbFiles.db_id = dbo.SrvDB.DbID
        INNER JOIN
-       dbo.Servers AS s
+       dbo.Servers (nolock) AS s
        ON s.ServID = dbo.SrvDB.SrvID;
 

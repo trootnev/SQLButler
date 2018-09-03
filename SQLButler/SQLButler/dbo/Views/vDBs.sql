@@ -16,11 +16,11 @@ SELECT dbo.SrvDB.DbID AS [ID базы],
        dbo.SrvDB.ImpLevel AS [Уровень важности],
        dbo.SrvDB.SrvID,
        dbo.SrvDB.Customer
-FROM   dbo.RecModel
+FROM   dbo.RecModel (nolock)
        INNER JOIN
-       dbo.SrvDB
+       dbo.SrvDB (nolock)
        ON dbo.RecModel.id = dbo.SrvDB.RecMod
        LEFT OUTER JOIN
-       dbo.Servers
+       dbo.Servers (nolock)
        ON dbo.SrvDB.SrvID = dbo.Servers.ServID;
 

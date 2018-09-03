@@ -11,11 +11,11 @@ SELECT LoginID,
        C.ContactShortName,
        ValidFrom,
        ValidTill
-FROM   [dbo].[ManagedLogins] AS ML
+FROM   [dbo].[ManagedLogins] (nolock) AS ML
        LEFT OUTER JOIN
-       dbo.Servers AS S
+       dbo.Servers (nolock) AS S
        ON ML.SrvID = S.ServID
        LEFT OUTER JOIN
-       dbo.Contacts AS C
+       dbo.Contacts (nolock) AS C
        ON ML.LoginOwnerID = C.ContactID;
 

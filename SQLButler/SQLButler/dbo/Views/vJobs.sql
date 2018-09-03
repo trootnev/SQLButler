@@ -8,8 +8,8 @@ SELECT j.id,
        CASE LASTRESULT WHEN 1 THEN 'Success' WHEN 0 THEN 'FAILURE!' END AS lastresult,
        j.lastrundate,
        j.catOverride AS CatOverride
-FROM   Srvjobs AS j
+FROM   Srvjobs (nolock) AS j
        INNER JOIN
-       Servers AS s
+       Servers (nolock) AS s
        ON j.srvid = s.ServID;
 

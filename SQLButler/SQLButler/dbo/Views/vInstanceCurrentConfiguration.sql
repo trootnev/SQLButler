@@ -11,9 +11,9 @@ SELECT TOP (100) PERCENT dbo.Servers.ServName,
                          dbo.InstanceConfiguration.is_dynamic,
                          dbo.InstanceConfiguration.is_advanced,
                          dbo.InstanceConfiguration.is_current
-FROM   dbo.Servers
+FROM   dbo.Servers (nolock)
        INNER JOIN
-       dbo.InstanceConfiguration
+       dbo.InstanceConfiguration (nolock)
        ON dbo.Servers.ServID = dbo.InstanceConfiguration.SrvID
 WHERE  (dbo.InstanceConfiguration.is_current = 1);
 

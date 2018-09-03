@@ -15,6 +15,12 @@ BEGIN
     SET @SQLStr = '
 DECLARE @ID uniqueidentifier = (SELECT NEWID())
 
+UPDATE dbo.SrvLogins
+SET is_current = 0
+where SrvID = '+CAST(@SRVID as nvarchar(10))+'
+AND is_current = 1
+
+
 INSERT INTO [dbo].[SrvLogins]
            (
            [ID]
@@ -22,6 +28,7 @@ INSERT INTO [dbo].[SrvLogins]
 		   ,[sid]
 		   ,[LoginName]
            ,[Pass]
+		   ,[is_current]
 		  )
 
 SELECT
@@ -30,7 +37,7 @@ SELECT
 	,[sid]
 	,[loginname]
 	,[password]
-
+	,1
 
 FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
 select  [sid]
@@ -40,6 +47,12 @@ from sys.syslogins
 WHERE hasaccess=1
 ''' + ')
 
+
+UPDATE dbo.SrvRoleMembers
+SET is_current = 0
+where SrvId =' + CAST (@SRVID AS NVARCHAR (50)) + '
+AND is_current = 1
+
 INSERT INTO [dbo].[SrvRoleMembers]
            (batch_id
 		   ,SrvID
@@ -48,7 +61,8 @@ INSERT INTO [dbo].[SrvRoleMembers]
            ,[Role]
            ,[Member]
            ,[Login]
-           ,[SID])
+           ,[SID]
+		   ,[is_current])
      
 SELECT @ID
 		,' + CAST (@SRVID AS NVARCHAR (50)) + '
@@ -58,6 +72,7 @@ SELECT @ID
            ,[Member]
            ,[Login]
            ,[SID]
+		   ,1
 
 	FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
 SET NOCOUNT ON
@@ -80,11 +95,12 @@ select [RoleType],
 		[Member],
 		[Login],
 		[SID]
+		,1
 		 from @t 
 
 UNION ALL
 
-select ''''Server Role'''' as [RoleType],dbp1.name as [Role],dbp2.name as [Member],sl.name as [Login], sl.sid as [SID]  from sys.server_role_members dbrm
+select ''''Server Role'''' as [RoleType],dbp1.name as [Role],dbp2.name as [Member],sl.name as [Login], sl.sid as [SID],1  from sys.server_role_members dbrm
 join sys.server_principals dbp1 on dbp1.principal_id = dbrm.role_principal_id and dbp1.type= ''''R''''
 join sys.server_principals dbp2 on dbp2.principal_id = dbrm.member_principal_id
 join sys.syslogins sl on sl.sid = dbp2.sid
