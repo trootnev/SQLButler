@@ -17,7 +17,10 @@
     [SLA]            INT            NULL,
     [Malfunction]    NTEXT          NULL,
     CONSTRAINT [PK_SrvDB] PRIMARY KEY CLUSTERED ([DbID] ASC),
-    CONSTRAINT [FK_SrvDB_DbGroup] FOREIGN KEY ([DbGroup]) REFERENCES [dbo].[DbGroup] ([id]),
-    CONSTRAINT [FK_SrvDB_RecModel] FOREIGN KEY ([RecMod]) REFERENCES [dbo].[RecModel] ([id])
+    CONSTRAINT [FK_SrvDB_DbGroup] FOREIGN KEY ([DbGroup]) REFERENCES [dbo].[DbGroup] ([id]) ON DELETE SET NULL,
+    CONSTRAINT [FK_SrvDB_RecModel] FOREIGN KEY ([RecMod]) REFERENCES [dbo].[RecModel] ([id]),
+    CONSTRAINT [FK_SrvDB_Servers] FOREIGN KEY ([SrvID]) REFERENCES [dbo].[Servers] ([ServID]) ON DELETE CASCADE
 );
+
+
 

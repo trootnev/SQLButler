@@ -3,7 +3,7 @@
 	[SrvID] [bigint] NOT NULL,
 	[batch_id] [uniqueidentifier] NOT NULL,
 	[CollectionDate] [datetime] NOT NULL,
-	[RoleType] [varchar](50) NOT NULL,
+	[RoleType] [varchar](255) NOT NULL,
 	[Role] [sysname] NOT NULL,
 	[Member] [sysname] NOT NULL,
 	[Login] [sysname] NOT NULL,

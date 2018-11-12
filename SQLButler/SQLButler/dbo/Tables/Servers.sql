@@ -24,14 +24,16 @@
     [GetJobsDetailsState]     INT            NULL,
     [GetJobsDetailsStateDesc] NVARCHAR (150) NULL,
     [Timestamp]               ROWVERSION     NULL,
-    [ConnectionTimeout] INT NULL DEFAULT 5, 
+    [ConnectionTimeout]       INT            CONSTRAINT [DF__tmp_ms_xx__Conne__16CE6296] DEFAULT ((5)) NULL,
     CONSTRAINT [PK_Servers] PRIMARY KEY CLUSTERED ([ServID] ASC),
     CONSTRAINT [FK_Servers_Cluster] FOREIGN KEY ([ClusterID]) REFERENCES [dbo].[Cluster] ([Clusterid]),
     CONSTRAINT [FK_Servers_Contacts] FOREIGN KEY ([OwnerID]) REFERENCES [dbo].[Contacts] ([ContactID]),
-    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrId]),
-    CONSTRAINT [FK_Servers_Hosts] FOREIGN KEY ([HostID]) REFERENCES [dbo].[Hosts] ([HostID]),
-    CONSTRAINT [FK_Servers_SrvGroup] FOREIGN KEY ([ServGroup]) REFERENCES [dbo].[SrvGroup] ([sgid])
+    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Servers_Hosts] FOREIGN KEY ([HostID]) REFERENCES [dbo].[Hosts] ([HostID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Servers_SrvGroup] FOREIGN KEY ([ServGroup]) REFERENCES [dbo].[SrvGroup] ([sgid]) ON DELETE SET NULL
 );
+
+
 
 
 GO

@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{3718d3f2-2d49-4b6f-9831-9a03c994622f}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
@@ -142,5 +142,8 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="dbo\InitialDataFilling.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\CMDB_Dev_current.accdb" />
   </ItemGroup>
 </Project>

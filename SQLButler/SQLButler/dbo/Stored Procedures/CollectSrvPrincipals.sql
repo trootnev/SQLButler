@@ -23,7 +23,7 @@ AND is_current = 1
 
 INSERT INTO [dbo].[SrvLogins]
            (
-           [ID]
+           [BatchId]
            ,[srvid]
 		   ,[sid]
 		   ,[LoginName]
@@ -76,7 +76,7 @@ SELECT @ID
 
 	FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
 SET NOCOUNT ON
-DECLARE @t table (RoleType nvarchar(50),
+DECLARE @t table (RoleType nvarchar(255),
 					[Role] nvarchar(255), 
 					[Member] nvarchar(255),
 					[Login] nvarchar(255), 

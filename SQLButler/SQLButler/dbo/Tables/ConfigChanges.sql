@@ -10,6 +10,9 @@
     [Prev_Value_in_Use]    SQL_VARIANT   NULL,
     [Approved]             BIT           CONSTRAINT [DF_ConfigChanges_Approved] DEFAULT ((0)) NOT NULL,
     [ts]                   ROWVERSION    NULL,
-    CONSTRAINT [PK_ConfigChanges] PRIMARY KEY CLUSTERED ([RecID] ASC)
+    CONSTRAINT [PK_ConfigChanges] PRIMARY KEY CLUSTERED ([RecID] ASC),
+    CONSTRAINT [FK_ConfigChanges_Servers] FOREIGN KEY ([SrvID]) REFERENCES [dbo].[Servers] ([ServID]) ON DELETE CASCADE
 );
+
+
 

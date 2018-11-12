@@ -1,5 +1,5 @@
 ﻿CREATE FUNCTION [dbo].[ConnStr]
-(@servname NVARCHAR (50) NULL)
+(@servname NVARCHAR (50) = NULL)
 RETURNS NVARCHAR (100)
 AS
 BEGIN

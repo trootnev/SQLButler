@@ -13,8 +13,11 @@
     [is_dynamic]       BIT              NOT NULL,
     [is_advanced]      BIT              NOT NULL,
     [is_current]       BIT              CONSTRAINT [DF_InstanceConfiguration_is_current] DEFAULT ((-1)) NOT NULL,
-    CONSTRAINT [PK_InstanceConfiguration] PRIMARY KEY CLUSTERED ([RecID] ASC) WITH (FILLFACTOR = 80, PAD_INDEX = ON, DATA_COMPRESSION = PAGE)
+    CONSTRAINT [PK_InstanceConfiguration] PRIMARY KEY CLUSTERED ([RecID] ASC) WITH (FILLFACTOR = 80, PAD_INDEX = ON, DATA_COMPRESSION = PAGE),
+    CONSTRAINT [FK_InstanceConfiguration_Servers] FOREIGN KEY ([SrvID]) REFERENCES [dbo].[Servers] ([ServID]) ON DELETE CASCADE
 );
+
+
 
 
 GO
