@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CollectSrvPrincipals]
+﻿CREATE PROCEDURE [dbo].[GetSrvPrincipals]
 @SRVID INT NULL
 AS
 BEGIN
@@ -9,7 +9,7 @@ BEGIN
     SET @ACTIONTYPE = 9;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     SET @SQLStr = '
@@ -39,7 +39,7 @@ SELECT
 	,[password]
 	,1
 
-FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select  [sid]
 	,[loginname]
 	,[password]
@@ -74,7 +74,7 @@ SELECT @ID
            ,[SID]
 		   ,1
 
-	FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+	FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 SET NOCOUNT ON
 DECLARE @t table (RoleType nvarchar(255),
 					[Role] nvarchar(255), 

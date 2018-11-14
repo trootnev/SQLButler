@@ -4,7 +4,7 @@
     [DbName]         NVARCHAR (50)  NULL,
     [DbComment]      NTEXT          NULL,
     [DbGroup]        INT            NULL,
-    [DBSize]         AS             ([dbo].[CalcDBSize]([DbId])),
+    [DBSize]         AS             ([dbo].[CalcDBSize]([DbID])),
     [BackupNeeded]   BIT            CONSTRAINT [DF_SrvDB_BackupNeeded] DEFAULT ((0)) NULL,
     [BackupMod]      INT            NULL,
     [RecMod]         INT            NULL,

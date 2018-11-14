@@ -13,13 +13,13 @@ BEGIN
     DECLARE JOBS CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD
         FOR SELECT   sj.SrvID,
                      sj.jid,
-                     s.connstr,
+                     dbo.ConnStr(s.ServName),
                      s.ServName
             FROM     dbo.SrvJobs AS SJ
                      INNER JOIN
                      dbo.Servers AS s
                      ON SJ.srvid = s.ServID
-            WHERE    s.active = -1
+            WHERE    s.active = 1
                      AND sj.CatOverride = 0
             ORDER BY sj.srvid;
     OPEN JOBS;
@@ -28,7 +28,7 @@ BEGIN
         BEGIN
             SET @SQLSTR = '
 	IF EXISTS(
-	Select 1 FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+	Select 1 FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select jobs.name, jobs.job_id
 FROM msdb.dbo.sysjobsteps steps join msdb.dbo.sysjobs jobs on steps.job_id = jobs.job_id
 JOIN msdb.dbo.syscategories cat on jobs.category_id = cat.category_id
@@ -48,7 +48,7 @@ or cat.name like ''''%Database Maintenance%''''
 or jobs.name like ''''%Reinitialize subscriptions having data validation failures%'''')''' + '))
 
 OR EXISTS(
-Select 1 FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+Select 1 FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select 1 from msdb..sysjobs where job_id = ''''' + CAST (@jid AS NVARCHAR (150)) + '''''
 AND category_id not in (0,2,98,99)''))
 BEGIN

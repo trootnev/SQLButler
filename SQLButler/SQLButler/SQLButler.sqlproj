@@ -110,22 +110,17 @@
     <Build Include="dbo\Functions\ConnStr.sql" />
     <Build Include="dbo\Stored Procedures\CheckConfig4Changes.sql" />
     <Build Include="dbo\Stored Procedures\CheckSrvSQLLogins.sql" />
-    <Build Include="dbo\Stored Procedures\CollectSrvPrincipals.sql" />
+    <Build Include="dbo\Stored Procedures\GetSrvPrincipals.sql" />
     <Build Include="dbo\Stored Procedures\CollectSrvData.sql" />
-    <Build Include="dbo\Stored Procedures\CollectSrvSQLAdmins.sql" />
-    <Build Include="dbo\Stored Procedures\GetDBFilesForAll.sql" />
+    <Build Include="dbo\Stored Procedures\GetSrvSQLAdmins.sql" />
+    <Build Include="dbo\Stored Procedures\GetDBFiles.sql" />
     <Build Include="dbo\Stored Procedures\GetJobsCategory.sql" />
-    <Build Include="dbo\Stored Procedures\GetJobsCategory_debug.sql" />
-    <Build Include="dbo\Stored Procedures\GetJobsInfoForAll.sql" />
-    <Build Include="dbo\Stored Procedures\GetJobsInfoForAll_debug.sql" />
+    <Build Include="dbo\Stored Procedures\GetJobsInfo.sql" />
     <Build Include="dbo\Stored Procedures\GetSrvConfigurations.sql" />
     <Build Include="dbo\Stored Procedures\GetSrvProperties.sql" />
     <Build Include="dbo\Stored Procedures\GetSrvVers.sql" />
-    <Build Include="dbo\Stored Procedures\GetSrvVers_debug.sql" />
-    <None Include="dbo\Stored Procedures\Perfcounter.sql" />
-    <Build Include="dbo\Stored Procedures\PingServers.sql" />
-    <Build Include="dbo\Stored Procedures\SrvGetDBNames.sql" />
-    <Build Include="dbo\Stored Procedures\SrvGetJobs.sql" />
+    <Build Include="dbo\Stored Procedures\GetDBNames.sql" />
+    <Build Include="dbo\Stored Procedures\GetJobs.sql" />
     <Build Include="dbo\Stored Procedures\WriteErrorLog.sql" />
     <Build Include="dbo\Tables\SrvRoleMembers.sql" />
     <Build Include="dbo\Views\vSrvRoleMembers.sql" />
@@ -135,7 +130,7 @@
     <Build Include="dbo\Stored Procedures\PingInstance.sql" />
     <Build Include="dbo\Tables\SrvVolumes.sql" />
     <Build Include="dbo\Views\vSrvVolumes.sql" />
-    <Build Include="dbo\Stored Procedures\CollectSrvVolumes.sql" />
+    <Build Include="dbo\Stored Procedures\GetSrvVolumes.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SQLButler.refactorlog" />
@@ -145,5 +140,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\CMDB_Dev_current.accdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="dbo\Script.PreDeployment1.sql" />
   </ItemGroup>
 </Project>

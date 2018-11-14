@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[SrvGetJobs]
+﻿CREATE PROCEDURE [dbo].[GetJobs]
 @SRVID INT NULL
 AS
 BEGIN
@@ -7,7 +7,7 @@ BEGIN
     DECLARE @Connstr AS NVARCHAR (1000);
 	 DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers
                     WHERE  ServID = @SRVID);
     SET @SQLSTR = '
@@ -17,7 +17,7 @@ DECLARE @CAT NVARCHAR (150)
 
 DECLARE JOBS CURSOR
 		FOR
-		SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''select jobs.job_id, jobs.name as JobName, cat.name as category
+		SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''select jobs.job_id, jobs.name as JobName, cat.name as category
 FROM msdb.dbo.sysjobsteps steps join msdb.dbo.sysjobs jobs on steps.job_id = jobs.job_id
 JOIN msdb.dbo.syscategories cat on jobs.category_id = cat.category_id
 WHERE jobs.name != ''''syspolicy_purge_history''''

@@ -9,9 +9,9 @@ BEGIN
     SET @ACTIONTYPE = 8;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
-                    FROM   Servers AS s
-                    WHERE  s.ServID = @SRVID);
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
+                    FROM   Servers
+                    WHERE  ServID = @SRVID);
     UPDATE dbo.Compliance_SQLLogins
     SET    is_current = 0
     WHERE  SrvID = @SrvID;
@@ -47,7 +47,7 @@ SELECT
            ,[P@ssw0rd]
 	 
 	 ,-1
-FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select  
 sp.name,
 		PWDCOMPARE(sp.name,password) same_as_login,
