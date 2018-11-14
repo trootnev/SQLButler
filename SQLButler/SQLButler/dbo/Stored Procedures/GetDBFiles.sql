@@ -21,7 +21,7 @@ BEGIN
                      INNER JOIN
                      dbo.Servers AS s
                      ON s.ServID = db.SrvID
-            WHERE    s.active = 1
+            WHERE    s.IsActive = 1
 			AND s.GetVersState = 1
             ORDER BY SrvID;
     OPEN DB;
@@ -50,18 +50,18 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 		BEGIN
 		
-		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where db_id =' + CAST (@DBID AS NVARCHAR (50)) + ' and inner_fileid = @fileid)
+		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where DbId =' + CAST (@DBID AS NVARCHAR (50)) + ' and [InternalFileId] = @fileid)
 			INSERT INTO dbo.DbFiles
 			(
-			db_id,
-			inner_fileid,
-			type,
-			size,
-			maxsize,
-			growth,
-			is_percent_growth,
-			name,
-			filename,
+			[DbId],
+			[InternalFileId],
+			[FileType],
+			[FileSize],
+			[FileMaxSize],
+			[FileGrowth],
+			[IsPercentGrowth],
+			[FileLogicalName],
+			[FileName],
 			MeasureDate
 			)
 			VALUES
@@ -80,15 +80,15 @@ BEGIN
 		ELSE
 			UPDATE dbo.DbFiles
 			SET 
-				size = @size,
-				maxsize = @maxsize,
-				growth = @growth,
-				is_percent_growth = @ispctgrowth,
-				name = @name,
-				filename = @filename,
+				[FileSize] = @size,
+				[FileMaxSize] = @maxsize,
+				[FileGrowth] = @growth,
+				[IsPercentGrowth] = @ispctgrowth,
+				[FileLogicalName] = @name,
+				[FileName] = @filename,
 				measuredate = getdate()
 			WHERE db_id = ' + CAST (@DBID AS NVARCHAR (50)) + ' 
-			AND inner_fileid = @fileid
+			AND [InternalFileId] = @fileid
 		
 		FETCH NEXT FROM FILES
 			INTO @fileid, @type, @size, @maxsize, @growth,@ispctgrowth, @name, @filename

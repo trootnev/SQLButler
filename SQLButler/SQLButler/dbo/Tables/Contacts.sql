@@ -4,7 +4,7 @@
     [ContactFullName]  NVARCHAR (255) NOT NULL,
     [ContactShortName] NVARCHAR (100) NOT NULL,
     [ContactCompanyID] INT            NULL,
-    [ContactDepID]     INT            NULL,
+    [ContactDepId]     INT            NULL,
     [ContactRole]      NVARCHAR (255) NULL,
     [ContactPhone]     NVARCHAR (20)  NULL,
     [ContactEmail]     NVARCHAR (30)  NULL,

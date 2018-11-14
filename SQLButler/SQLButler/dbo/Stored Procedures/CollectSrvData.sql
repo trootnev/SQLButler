@@ -13,7 +13,7 @@ BEGIN
     DECLARE SERV CURSOR
         FOR SELECT ServID
             FROM   Servers AS s
-            WHERE  s.ACTIVE = 1
+            WHERE  s.IsActive = 1
                    AND (ServID = @SRV
                         OR @SRV IS NULL);
 	CREATE TABLE  #PingStatus  

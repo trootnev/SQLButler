@@ -1,19 +1,19 @@
 ﻿CREATE VIEW [dbo].[vInstanceCurrentConfiguration]
 AS
-SELECT TOP (100) PERCENT dbo.Servers.ServName,
-                         dbo.InstanceConfiguration.configuration_id,
-                         dbo.InstanceConfiguration.name,
-                         dbo.InstanceConfiguration.value,
-                         dbo.InstanceConfiguration.minimum,
-                         dbo.InstanceConfiguration.maximum,
-                         dbo.InstanceConfiguration.description,
-                         dbo.InstanceConfiguration.value_in_use,
-                         dbo.InstanceConfiguration.is_dynamic,
-                         dbo.InstanceConfiguration.is_advanced,
-                         dbo.InstanceConfiguration.is_current
+SELECT  dbo.Servers.ServName,
+                         dbo.InstanceConfiguration.ConfigurationID,
+                         dbo.InstanceConfiguration.ConfigurationName,
+                         dbo.InstanceConfiguration.ConfigurationValue,
+                         dbo.InstanceConfiguration.ConfigurationMinimum,
+                         dbo.InstanceConfiguration.ConfigurationMaximum,
+                         dbo.InstanceConfiguration.ConfigurationDescription,
+                         dbo.InstanceConfiguration.ConfigurationValueInUse,
+                         dbo.InstanceConfiguration.IsDynamic,
+                         dbo.InstanceConfiguration.IsAdvanced,
+                         dbo.InstanceConfiguration.IsCurrent
 FROM   dbo.Servers (nolock)
        INNER JOIN
        dbo.InstanceConfiguration (nolock)
        ON dbo.Servers.ServID = dbo.InstanceConfiguration.SrvID
-WHERE  (dbo.InstanceConfiguration.is_current = 1);
+WHERE  (dbo.InstanceConfiguration.IsCurrent = 1);
 

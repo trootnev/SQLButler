@@ -27,18 +27,18 @@ FETCH NEXT FROM JOBS
 INTO @JID, @JNAME, @CAT
 WHILE @@FETCH_STATUS = 0
 BEGIN
-	IF NOT EXISTS (SELECT 1 FROM DBO.SrvJobs WHERE SrvId =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND jid = @JID )
+	IF NOT EXISTS (SELECT 1 FROM DBO.SrvJobs WHERE SrvId =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND JobId = @JID )
 	Insert into dbo.SrvJobs
-	(srvid,
-	jid,
-	job_name)
+	(SrvId,
+	JobId,
+	JobName)
 	VALUES (' + CAST (@SRVID AS NVARCHAR (10)) + ', @JID,@JNAME)
 	
 	UPDATE dbo.SrvJobs
-	SET job_name = @JNAME
+	SET JobName = @JNAME
 	where Srvid = ' + CAST (@SRVID AS NVARCHAR (10)) + '
-	AND jid = @JID
-	AND job_name <> @JNAME 	
+	AND JobId = @JID
+	AND JobName <> @JNAME 	
 FETCH NEXT FROM JOBS
 INTO @JID, @JNAME, @CAT
 END

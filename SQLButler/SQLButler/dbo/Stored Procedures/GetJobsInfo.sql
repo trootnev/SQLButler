@@ -12,14 +12,14 @@ BEGIN
     DECLARE @ERROR_MESS AS NVARCHAR (250);
     DECLARE JOBS CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD
         FOR SELECT   sj.SrvID,
-                     sj.jid,
+                     sj.JobId,
                      dbo.ConnStr(s.ServName),
                      s.ServName
             FROM     dbo.SrvJobs AS SJ
                      INNER JOIN
                      dbo.Servers AS s
                      ON SJ.srvid = s.ServID
-            WHERE    s.active = 1
+            WHERE    s.IsActive = 1
                      AND sj.CatOverride = 0
 					 AND s.GetVersState = 1
             ORDER BY sj.srvid;
@@ -45,13 +45,13 @@ ORDER BY hist.run_date desc''' + ');
 
 		UPDATE dbo.SrvJobs
 		SET 
-		category = @CAT,
-		Lastresult = @RUNSTATUS,
+		JobCategory = @CAT,
+		LastOutcome = @RUNSTATUS,
 		LastRunDate = CAST(@LRD as DATE)
 		WHERE 
-		jid = ''' + CAST (@jid AS NVARCHAR (150)) + '''
+		JobId = ''' + CAST (@jid AS NVARCHAR (150)) + '''
 		AND
-		SRVID = ' + CAST (@SRVID AS NVARCHAR (150)) + '
+		SrvId = ' + CAST (@SRVID AS NVARCHAR (150)) + '
 		';
             SET @ERROR_CODE = 0;
             BEGIN TRY

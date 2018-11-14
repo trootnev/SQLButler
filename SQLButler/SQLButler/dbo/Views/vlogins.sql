@@ -3,12 +3,11 @@ AS
 SELECT j.collectionDate,
        s.ServName,
        j.[LoginName],
-       j.[Pass],
        j.[sid],
        j.[Comment],
-       j.[Owner],
-       j.srvid,
-	   j.is_current
+       j.OwnerId,
+       j.SrvId,
+	   j.IsCurrent
 
 FROM   SrvLogins (nolock) AS j
        INNER JOIN

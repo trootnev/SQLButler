@@ -13,7 +13,7 @@ BEGIN
                     FROM   Servers
                     WHERE  ServID = @SRVID);
     UPDATE dbo.Compliance_SQLLogins
-    SET    is_current = 0
+    SET    IsCurrent = 0
     WHERE  SrvID = @SrvID;
     SET @SQLStr = '
 DECLARE @BatchID uniqueidentifier = (SELECT NEWID())
@@ -22,7 +22,7 @@ INSERT INTO [dbo].[Compliance_SQLLogins]
            (
            [BatchID]
            ,[SrvID]
-          ,[login]
+          ,[Login]
            ,[same_as_login]
            ,[blank]
            ,[123]
@@ -31,7 +31,7 @@ INSERT INTO [dbo].[Compliance_SQLLogins]
            ,[Password]
            ,[P@ssword]
            ,[P@ssw0rd]
-           ,[is_current])
+           ,[IsCurrent])
 
 SELECT
  @BatchID
