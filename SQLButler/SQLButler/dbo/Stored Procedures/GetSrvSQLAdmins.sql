@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CollectSrvSQLAdmins]
+﻿CREATE PROCEDURE [dbo].[GetSrvSQLAdmins]
 @SRVID INT NULL
 AS
 BEGIN
@@ -9,7 +9,7 @@ BEGIN
     SET @ACTIONTYPE = 10;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     UPDATE Compliance_SrvSysadmins
@@ -31,7 +31,7 @@ SELECT
 	 ,' + CAST (@SRVID AS NVARCHAR (50)) + '
 	 ,name
 	 ,-1
-FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select  
 		sp.name	
 		from sys.server_role_members rm

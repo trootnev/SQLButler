@@ -8,6 +8,9 @@
     [lastrundate] DATE           NULL,
     [IsSystem]    BIT            NULL,
     [CatOverride] BIT            CONSTRAINT [DF_SrvJobs_CatOverride] DEFAULT ((0)) NULL,
-    CONSTRAINT [PK_SrvJobs] PRIMARY KEY CLUSTERED ([id] ASC)
+    CONSTRAINT [PK_SrvJobs] PRIMARY KEY CLUSTERED ([id] ASC),
+    CONSTRAINT [FK_SrvJobs_Servers] FOREIGN KEY ([srvid]) REFERENCES [dbo].[Servers] ([ServID]) ON DELETE CASCADE
 );
+
+
 

@@ -7,4 +7,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CollectionDate" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="18fdcead-a0bd-4a0d-8495-4711c32cc519" ChangeDateTime="11/02/2018 11:33:09">
+    <Property Name="ElementName" Value="[dbo].[SrvLogins].[id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SrvLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="batch_id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="f71827eb-34fe-4ca4-95bb-a50eca13f8d4" ChangeDateTime="11/02/2018 11:34:11">
+    <Property Name="ElementName" Value="[dbo].[SrvLogins].[batch_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[SrvLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="BatchId" />
+  </Operation>
 </Operations>

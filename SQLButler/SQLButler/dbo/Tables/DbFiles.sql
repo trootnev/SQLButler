@@ -11,8 +11,11 @@
     [MeasureDate]       DATETIME       NULL,
     [Drive]             AS             (left([filename],(2))) PERSISTED,
     [is_percent_growth] BIT            CONSTRAINT [DF_DbFiles_is_percent_growth] DEFAULT ((-1)) NOT NULL,
-    CONSTRAINT [PK_DbFiles] PRIMARY KEY CLUSTERED ([id] ASC)
+    CONSTRAINT [PK_DbFiles] PRIMARY KEY CLUSTERED ([id] ASC),
+    CONSTRAINT [FK_DbFiles_SrvDB] FOREIGN KEY ([db_id]) REFERENCES [dbo].[SrvDB] ([DbID]) ON DELETE CASCADE
 );
+
+
 
 
 GO

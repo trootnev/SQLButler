@@ -8,8 +8,7 @@
     [ServGroup]               INT            NULL,
     [Version]                 NVARCHAR (250) NULL,
     [CredID]                  INT            NULL,
-    [connstr]                 AS             ([dbo].[ConnStr]([ServName])),
-    [active]                  INT            CONSTRAINT [DF_Servers_is active] DEFAULT ((0)) NULL,
+    [active]                  BIT            CONSTRAINT [DF_Servers_is active] DEFAULT ((0)) NULL,
     [SrvComment]              NVARCHAR (MAX) NULL,
     [ip]                      NVARCHAR (20)  NULL,
     [OwnerID]                 INT            NOT NULL,
@@ -24,14 +23,16 @@
     [GetJobsDetailsState]     INT            NULL,
     [GetJobsDetailsStateDesc] NVARCHAR (150) NULL,
     [Timestamp]               ROWVERSION     NULL,
-    [ConnectionTimeout] INT NULL DEFAULT 5, 
+    [ConnectionTimeout]       INT            CONSTRAINT [DF_Servers_ConnectionTumeout] DEFAULT ((5)) NULL,
     CONSTRAINT [PK_Servers] PRIMARY KEY CLUSTERED ([ServID] ASC),
     CONSTRAINT [FK_Servers_Cluster] FOREIGN KEY ([ClusterID]) REFERENCES [dbo].[Cluster] ([Clusterid]),
     CONSTRAINT [FK_Servers_Contacts] FOREIGN KEY ([OwnerID]) REFERENCES [dbo].[Contacts] ([ContactID]),
-    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrId]),
-    CONSTRAINT [FK_Servers_Hosts] FOREIGN KEY ([HostID]) REFERENCES [dbo].[Hosts] ([HostID]),
-    CONSTRAINT [FK_Servers_SrvGroup] FOREIGN KEY ([ServGroup]) REFERENCES [dbo].[SrvGroup] ([sgid])
+    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Servers_Hosts] FOREIGN KEY ([HostID]) REFERENCES [dbo].[Hosts] ([HostID]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Servers_SrvGroup] FOREIGN KEY ([ServGroup]) REFERENCES [dbo].[SrvGroup] ([sgid]) ON DELETE SET NULL
 );
+
+
 
 
 GO

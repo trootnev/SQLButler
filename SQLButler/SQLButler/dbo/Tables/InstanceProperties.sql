@@ -9,6 +9,8 @@
     [IsCurrent]            BIT              CONSTRAINT [DF_InstanceProperties_IsCurrent] DEFAULT ((1)) NOT NULL,
     CONSTRAINT [PK_InstanceProperties] PRIMARY KEY CLUSTERED ([PropertyID] ASC),
     CONSTRAINT [FK_InstanceProperties_InstancePropertyTypes] FOREIGN KEY ([PropertyTypeID]) REFERENCES [dbo].[InstancePropertyTypes] ([PropertyTypeID]),
-    CONSTRAINT [FK_InstanceProperties_Servers] FOREIGN KEY ([SrvID]) REFERENCES [dbo].[Servers] ([ServID])
+    CONSTRAINT [FK_InstanceProperties_Servers] FOREIGN KEY ([SrvID]) REFERENCES [dbo].[Servers] ([ServID]) ON DELETE CASCADE
 );
+
+
 

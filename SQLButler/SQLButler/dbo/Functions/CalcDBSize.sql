@@ -1,5 +1,5 @@
 ﻿CREATE FUNCTION [dbo].[CalcDBSize]
-(@dbid INT NULL)
+(@dbid INT = NULL)
 RETURNS FLOAT (53)
 AS
 BEGIN

@@ -9,12 +9,12 @@ BEGIN
     SET @ACTIONTYPE = 1;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
-                    FROM   Servers AS s
-                    WHERE  s.ServID = @SRVID);
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
+                    FROM   Servers
+                    WHERE  ServID = @SRVID);
     SET @SQLStr = '
 DECLARE @VERSION NVARCHAR (250)
-SET @VERSION = (SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''select @@version''' + '))
+SET @VERSION = (SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''select @@version''' + '))
 UPDATE Servers
 Set
 Version = @Version,

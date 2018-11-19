@@ -10,7 +10,7 @@ BEGIN
     SET @ACTIONTYPE = 6;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     SET @SQLStr = '
@@ -20,7 +20,7 @@ DECLARE @ishadr NVARCHAR(10)
 DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (50))+'
 
 INSERT @t (pName, pValue)
-(SELECT pName,pValue FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+(SELECT pName,pValue FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 
 SET FMTONLY OFF; SET NOCOUNT ON;
 

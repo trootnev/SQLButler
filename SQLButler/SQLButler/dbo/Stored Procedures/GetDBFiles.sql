@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[GetDBFilesForAll]
+﻿CREATE PROCEDURE [dbo].[GetDBFiles]
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -15,7 +15,7 @@ BEGIN
         FOR SELECT   [DBid],
                      DbName,
                      SrvID,
-                     s.connstr,
+                     dbo.ConnStr(s.ServName),
                      s.ServName
             FROM     dbo.SrvDB AS db
                      INNER JOIN
@@ -40,7 +40,7 @@ BEGIN
 	DECLARE @filename nvarchar(max)
 	
 	DECLARE FILES CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD
-				FOR SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''select file_id as fileid, type, size, max_size as maxsize, growth, is_percent_growth, name, physical_name as filename from master.sys.master_files 
+				FOR SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''select file_id as fileid, type, size, max_size as maxsize, growth, is_percent_growth, name, physical_name as filename from master.sys.master_files 
 	where database_id =DB_ID(''''' + RTRIM(@DB) + ''''')''' + ');
 	
 	OPEN FILES;

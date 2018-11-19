@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[SrvGetDBNames]
+﻿CREATE PROCEDURE [dbo].[GetDBNames]
 @SRVID INT NULL
 AS
 BEGIN
@@ -7,7 +7,7 @@ BEGIN
     DECLARE @Connstr AS NVARCHAR (MAX);
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (250);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers
                     WHERE  ServID = @SRVID);
     SET @SQLSTR = '
@@ -15,7 +15,7 @@ DECLARE @DB NVARCHAR(50)
 DECLARE @RM TINYINT
 DECLARE DBNAME CURSOR
 		FOR
-		SELECT * FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''SELECT name,recovery_model FROM sys.databases''' + ');
+		SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''SELECT name,recovery_model FROM sys.databases''' + ');
 OPEN DBNAME;
 FETCH NEXT FROM DBNAME
 INTO @DB, @RM

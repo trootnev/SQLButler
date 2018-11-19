@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[GetJobsInfoForAll]
+﻿CREATE PROCEDURE [dbo].[GetJobsInfo]
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -13,7 +13,7 @@ BEGIN
     DECLARE JOBS CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD
         FOR SELECT   sj.SrvID,
                      sj.jid,
-                     s.connstr,
+                     dbo.ConnStr(s.ServName),
                      s.ServName
             FROM     dbo.SrvJobs AS SJ
                      INNER JOIN
@@ -34,7 +34,7 @@ DECLARE @RUNSTATUS INT
 DECLARE @LRD NVARCHAR(150) 
 DECLARE @STUB UNIQUEIDENTIFIER
 	
-	Select @STUB = jobid, @CAT = Category, @RUNSTATUS = RunStatus, @LRD = Lastrundate FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+	Select @STUB = jobid, @CAT = Category, @RUNSTATUS = RunStatus, @LRD = Lastrundate FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 				select top 1 jobs.job_id as JobID, cat.name as category , hist.run_status as RunStatus, MAX(hist.run_date) as LastRunDate
 FROM msdb.dbo.sysjobsteps steps join msdb.dbo.sysjobs jobs on steps.job_id = jobs.job_id
 JOIN msdb.dbo.syscategories cat on jobs.category_id = cat.category_id

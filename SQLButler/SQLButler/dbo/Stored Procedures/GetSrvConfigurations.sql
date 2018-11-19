@@ -9,7 +9,7 @@ BEGIN
     SET @ACTIONTYPE = 7;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     UPDATE dbo.InstanceConfiguration
@@ -46,7 +46,7 @@ SELECT
 	 ,[is_dynamic]
 	 ,[is_advanced]
 	 ,-1
-FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 SELECT * FROM sys.configurations
 ''' + ')
 ';

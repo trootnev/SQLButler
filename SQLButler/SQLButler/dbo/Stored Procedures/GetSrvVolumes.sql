@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[CollectSrvVolumes]
+﻿CREATE PROCEDURE [dbo].[GetSrvVolumes]
 @SRVID INT NULL
 AS
 BEGIN
@@ -9,7 +9,7 @@ BEGIN
     SET @ACTIONTYPE = 11;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
-    SET @Connstr = (SELECT connstr
+    SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID
 					);
@@ -19,7 +19,7 @@ BEGIN
 	DECLARE @SrvID int = '+CAST(@SRVID as nvarchar(10))+'
 	DECLARE @result TABLE (Volume nvarchar(255),TotalMB bigint, AvailableMB bigint)
 	Insert @result
-	SELECT Volume,TotalMB,AvailableMB FROM OPENROWSET(''SQLNCLI'',' + '''' + @Connstr + '''' + ', ' + '''
+	SELECT Volume,TotalMB,AvailableMB FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 	SET NOCOUNT ON;
 
 	DECLARE @result TABLE (Volume nvarchar(255),TotalMB bigint, AvailableMB bigint)
