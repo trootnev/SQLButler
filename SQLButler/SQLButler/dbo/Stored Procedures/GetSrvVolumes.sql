@@ -50,12 +50,12 @@ BEGIN
 
 ''' + ')
 	UPDATE dbo.SrvVolumes
-	SET is_current =0 
+	SET IsCurrent =0 
 	WHERE SrvID = @SrvID
-	AND is_current = 1
+	AND IsCurrent = 1
 
 
-	INSERT dbo.SrvVolumes (SrvId,VolumeMP,VolumeTotalMB,VolumeAvailableMB,is_current )
+	INSERT dbo.SrvVolumes (SrvID,VolumeMP,VolumeTotalMB,VolumeAvailableMB,IsCurrent )
 	SELECT @SrvID,
 			Volume,
 			TotalMB,

@@ -11,5 +11,5 @@ SELECT j.id,
 FROM   Srvjobs (nolock) AS j
        INNER JOIN
        Servers (nolock) AS s
-       ON j.SrvId = s.ServID;
+       ON j.SrvID = s.ServID;
 

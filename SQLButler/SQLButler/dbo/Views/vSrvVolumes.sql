@@ -10,5 +10,5 @@ SELECT
       ,[MeasureDate]
       ,IsCurrent
   FROM [dbo].[SrvVolumes] (nolock) SV
-  JOIN dbo.Servers (nolock) s on SV.SrvId = s.ServID
+  JOIN dbo.Servers (nolock) s on SV.SrvID = s.ServID
   WHERE IsCurrent = 1

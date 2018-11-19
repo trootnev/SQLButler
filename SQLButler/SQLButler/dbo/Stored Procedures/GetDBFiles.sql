@@ -50,11 +50,11 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 		BEGIN
 		
-		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where DbId =' + CAST (@DBID AS NVARCHAR (50)) + ' and [InternalFileId] = @fileid)
+		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where DbID =' + CAST (@DBID AS NVARCHAR (50)) + ' and [InternalFileID] = @fileid)
 			INSERT INTO dbo.DbFiles
 			(
-			[DbId],
-			[InternalFileId],
+			[DbID],
+			[InternalFileID],
 			[FileType],
 			[FileSize],
 			[FileMaxSize],
@@ -87,8 +87,8 @@ BEGIN
 				[FileLogicalName] = @name,
 				[FileName] = @filename,
 				measuredate = getdate()
-			WHERE db_id = ' + CAST (@DBID AS NVARCHAR (50)) + ' 
-			AND [InternalFileId] = @fileid
+			WHERE DbID = ' + CAST (@DBID AS NVARCHAR (50)) + ' 
+			AND [InternalFileID] = @fileid
 		
 		FETCH NEXT FROM FILES
 			INTO @fileid, @type, @size, @maxsize, @growth,@ispctgrowth, @name, @filename
@@ -103,7 +103,7 @@ BEGIN
                 SET @ERROR_CODE = ERROR_NUMBER();
                 SET @ERROR_MESS = ERROR_MESSAGE();
                 EXECUTE dbo.WriteErrorLog 3, @SRVID, @ERROR_CODE, @ERROR_MESS;
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetDbFilesState     = @ERROR_CODE,
                        GetDbFilesStateDesc = @ERROR_MESS
                 WHERE  ServID = @SRVID;

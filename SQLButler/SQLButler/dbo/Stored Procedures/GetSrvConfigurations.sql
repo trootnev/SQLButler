@@ -62,7 +62,7 @@ SELECT * FROM sys.configurations
     DECLARE @D AS INT;
     SELECT @D = IntValue
     FROM   dbo.Settings
-    WHERE  [name] = 'ConfRetentionDays';
+    WHERE  [Name] = 'ConfRetentionDays';
     DELETE dbo.InstanceConfiguration
     WHERE  SrvID = @SRVID
            AND CollectionDate < DATEADD(DD, -@D, GETDATE());

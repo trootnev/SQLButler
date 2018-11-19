@@ -23,8 +23,8 @@ AND IsCurrent = 1
 
 INSERT INTO [dbo].[SrvLogins]
            (
-           [BatchId]
-           ,[SrvId]
+           [BatchID]
+           ,[SrvID]
 		   ,[SID]
 		   ,[LoginName]
            ,[IsCurrent]
@@ -47,7 +47,7 @@ WHERE hasaccess=1
 
 UPDATE dbo.SrvRoleMembers
 SET IsCurrent = 0
-where SrvId =' + CAST (@SRVID AS NVARCHAR (50)) + '
+where SrvID =' + CAST (@SRVID AS NVARCHAR (50)) + '
 AND IsCurrent = 1
 
 INSERT INTO [dbo].[SrvRoleMembers]

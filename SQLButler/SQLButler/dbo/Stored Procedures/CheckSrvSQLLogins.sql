@@ -83,7 +83,7 @@ where sp.type_desc = ''''SQL_LOGIN''''
     DECLARE @D AS INT;
     SELECT @D = IntValue
     FROM   dbo.Settings
-    WHERE  [name] = 'ConfRetentionDays';
+    WHERE  [Name] = 'ConfRetentionDays';
     DELETE dbo.Compliance_SQLLogins
     WHERE  SrvID = @SRVID
            AND CollectionDate < DATEADD(DD, -@D, GETDATE());
