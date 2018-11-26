@@ -16,6 +16,7 @@
     [CustomerDepartmentID]       INT NULL,
     [SLA]            INT            NULL,
     [Malfunction]    NVARCHAR(MAX)          NULL,
+    [OwnerLogin] NVARCHAR(100) NULL, 
     CONSTRAINT [PK_SrvDB] PRIMARY KEY CLUSTERED ([DbID] ASC),
     CONSTRAINT [FK_SrvDB_DbGroup] FOREIGN KEY ([DbGroupID]) REFERENCES [dbo].[DbGroup] ([id]) ON DELETE SET NULL,
     CONSTRAINT [FK_SrvDB_RecModel] FOREIGN KEY ([RecMod]) REFERENCES [dbo].[RecModel] ([id]),
