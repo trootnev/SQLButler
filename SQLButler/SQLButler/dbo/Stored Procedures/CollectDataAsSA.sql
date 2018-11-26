@@ -1,0 +1,4 @@
+﻿CREATE PROCEDURE [dbo].[CollectDataAsSA] @SID int = NULL
+WITH EXECUTE AS OWNER
+AS
+EXEC dbo.CollectSrvData @SID

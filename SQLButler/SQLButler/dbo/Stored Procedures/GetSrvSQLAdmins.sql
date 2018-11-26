@@ -13,7 +13,7 @@ BEGIN
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     UPDATE Compliance_SrvSysadmins
-    SET    is_current = 0
+    SET    IsCurrent = 0
     WHERE  SrvID = @SrvID;
     SET @SQLStr = '
 DECLARE @BatchID uniqueidentifier = (SELECT NEWID())
@@ -22,8 +22,8 @@ INSERT INTO [dbo].[Compliance_SrvSysadmins]
            (
            [BatchID]
            ,[SrvID]
-          ,sa_name
-		  ,is_current
+          ,SAName
+		  ,IsCurrent
 		  )
 
 SELECT
@@ -53,7 +53,7 @@ where rm.role_principal_id = 3
     DECLARE @D AS INT;
     SELECT @D = IntValue
     FROM   dbo.Settings
-    WHERE  [name] = 'ConfRetentionDays';
+    WHERE  [Name] = 'ConfRetentionDays';
     DELETE dbo.Compliance_SrvSysadmins
     WHERE  SrvID = @SRVID
            AND CollectionDate < DATEADD(DD, -@D, GETDATE());

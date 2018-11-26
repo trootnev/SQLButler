@@ -1,14 +1,14 @@
-﻿CREATE VIEW [dbo].[vlogins]
+﻿CREATE VIEW [dbo].[vLogins]
 AS
-SELECT j.collectionDate,
+SELECT j.RecId,
+		j.CollectionDate,
        s.ServName,
        j.[LoginName],
-       j.[Pass],
-       j.[sid],
+       j.[SID],
        j.[Comment],
-       j.[Owner],
-       j.srvid,
-	   j.is_current
+       j.OwnerID,
+       j.SrvID,
+	   j.IsCurrent
 
 FROM   SrvLogins (nolock) AS j
        INNER JOIN

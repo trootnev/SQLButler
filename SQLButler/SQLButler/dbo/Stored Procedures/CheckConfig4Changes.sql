@@ -2,20 +2,20 @@
 AS
 WITH   CTE (SrvID, RK, timestamp, name, value, value_in_use)
 AS     (SELECT SrvID,
-               RANK() OVER (PARTITION BY SrvID, name ORDER BY Timestamp DESC) AS RK,
-               timestamp,
-               name,
-               value,
-               value_in_use
+               RANK() OVER (PARTITION BY SrvID, ConfigurationName ORDER BY CollectionDate DESC) AS RK,
+               [CollectionDate],
+               ConfigurationName,
+               ConfigurationValue,
+               ConfigurationValueInUse
         FROM   [dbo].[InstanceConfiguration]
-        WHERE  Timestamp > dateadd(dd, -7, getdate()))
+        WHERE  CollectionDate > dateadd(dd, -7, getdate()))
 
 INSERT INTO dbo.ConfigChanges
-(SrvID, Parameter, Change_Detected_Time, New_Value,Value_In_Use,Prev_Timestamp, Prev_Value, Prev_Value_In_Use)
+(SrvID, Parameter, [DetectionTime], NewValue,ValueInUse,PrevTimestamp, PrevValue, PrevValueInUse)
 SELECT c1.SrvID,
        c1.name AS Parameter,
        c1.timestamp AS Change_Detected_Time,
-       c1.value AS New_value,
+       c1.value AS New_Value,
        c1.value_in_use AS Value_In_Use,
        c2.timestamp AS Prev_Timestamp,
        c2.value AS Prev_Value,

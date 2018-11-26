@@ -16,19 +16,18 @@ BEGIN
 DECLARE @ID uniqueidentifier = (SELECT NEWID())
 
 UPDATE dbo.SrvLogins
-SET is_current = 0
+SET IsCurrent = 0
 where SrvID = '+CAST(@SRVID as nvarchar(10))+'
-AND is_current = 1
+AND IsCurrent = 1
 
 
 INSERT INTO [dbo].[SrvLogins]
            (
-           [BatchId]
-           ,[srvid]
-		   ,[sid]
+           [BatchID]
+           ,[SrvID]
+		   ,[SID]
 		   ,[LoginName]
-           ,[Pass]
-		   ,[is_current]
+           ,[IsCurrent]
 		  )
 
 SELECT
@@ -36,25 +35,23 @@ SELECT
 	 ,' + CAST (@SRVID AS NVARCHAR (50)) + '
 	,[sid]
 	,[loginname]
-	,[password]
 	,1
 
 FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
 select  [sid]
 	,[loginname]
-	,[password]
-from sys.syslogins
+	from sys.syslogins
 WHERE hasaccess=1
 ''' + ')
 
 
 UPDATE dbo.SrvRoleMembers
-SET is_current = 0
-where SrvId =' + CAST (@SRVID AS NVARCHAR (50)) + '
-AND is_current = 1
+SET IsCurrent = 0
+where SrvID =' + CAST (@SRVID AS NVARCHAR (50)) + '
+AND IsCurrent = 1
 
 INSERT INTO [dbo].[SrvRoleMembers]
-           (batch_id
+           (BatchID
 		   ,SrvID
 		   ,[CollectionDate]
            ,[RoleType]
@@ -62,7 +59,7 @@ INSERT INTO [dbo].[SrvRoleMembers]
            ,[Member]
            ,[Login]
            ,[SID]
-		   ,[is_current])
+		   ,[IsCurrent])
      
 SELECT @ID
 		,' + CAST (@SRVID AS NVARCHAR (50)) + '

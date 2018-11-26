@@ -61,3 +61,8 @@ ON TARGET.Name = SOURCE.Name
 
 WHEN NOT MATCHED THEN INSERT (Name, IntValue,StringValue,Description)
 VALUES (SOURCE.Name, SOURCE.IntValue, SOURCE.StringValue, SOURCE.Description);
+
+
+
+INSERT dbo.DbVersion (Version,DateInstalled) VALUES ('0.0.2 Beta',getdate())
+GO

@@ -71,7 +71,6 @@
     <Build Include="dbo\Tables\Servers.sql" />
     <Build Include="dbo\Tables\SrvDB.sql" />
     <Build Include="dbo\Tables\ActionTypes.sql" />
-    <Build Include="dbo\Tables\Bugs.sql" />
     <Build Include="dbo\Tables\Cluster.sql" />
     <Build Include="dbo\Tables\ClusterNodes.sql" />
     <Build Include="dbo\Tables\Compliance_SQLLogins.sql" />
@@ -95,12 +94,12 @@
     <Build Include="dbo\Tables\SrvLogins.sql" />
     <Build Include="dbo\Tables\SrvRecollect.sql" />
     <Build Include="dbo\Tables\Vendors.sql" />
-    <Build Include="dbo\Views\v_management_errors.sql" />
-    <Build Include="dbo\Views\vDB_Files.sql" />
+    <Build Include="dbo\Views\vManagementErrors.sql" />
+    <Build Include="dbo\Views\vDBFiles.sql" />
     <Build Include="dbo\Views\vDBs.sql" />
     <Build Include="dbo\Views\vInstanceCurrentConfiguration.sql" />
     <Build Include="dbo\Views\vJobs.sql" />
-    <Build Include="dbo\Views\vlogins.sql" />
+    <Build Include="dbo\Views\vLogins.sql" />
     <Build Include="dbo\Views\vManagedLogins.sql" />
     <Build Include="dbo\Views\vServers.sql" />
     <Build Include="dbo\Views\vContacts.sql" />
@@ -131,6 +130,15 @@
     <Build Include="dbo\Tables\SrvVolumes.sql" />
     <Build Include="dbo\Views\vSrvVolumes.sql" />
     <Build Include="dbo\Stored Procedures\GetSrvVolumes.sql" />
+    <Build Include="dbo\Views\vCredentials.sql" />
+    <Build Include="dbo\Views\vServersDetailed.sql" />
+    <Build Include="dbo\Tables\InstanceTraceFlags.sql" />
+    <Build Include="dbo\Views\vServers2.sql" />
+    <Build Include="dbo\Views\vInstanceProperties2.sql" />
+    <Build Include="dbo\Stored Procedures\NodesCompare.sql" />
+    <Build Include="dbo\Stored Procedures\GetSrvTraceFlags.sql" />
+    <Build Include="dbo\Stored Procedures\CollectDataAsSA.sql" />
+    <Build Include="dbo\Tables\DbVersion.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="SQLButler.refactorlog" />

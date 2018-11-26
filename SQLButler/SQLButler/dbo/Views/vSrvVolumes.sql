@@ -8,7 +8,7 @@ SELECT
       ,[VolumeTotalMB]
       ,[VolumeAvailableMB]
       ,[MeasureDate]
-      ,[is_current]
+      ,IsCurrent
   FROM [dbo].[SrvVolumes] (nolock) SV
-  JOIN dbo.Servers (nolock) s on SV.SrvId = s.ServID
-  WHERE is_current = 1
+  JOIN dbo.Servers (nolock) s on SV.SrvID = s.ServID
+  WHERE IsCurrent = 1

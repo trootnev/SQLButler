@@ -12,14 +12,14 @@ BEGIN
     DECLARE @ERROR_MESS AS NVARCHAR (250);
     DECLARE JOBS CURSOR FORWARD_ONLY READ_ONLY FAST_FORWARD
         FOR SELECT   sj.SrvID,
-                     sj.jid,
+                     sj.JobID,
                      dbo.ConnStr(s.ServName),
                      s.ServName
             FROM     dbo.SrvJobs AS SJ
                      INNER JOIN
                      dbo.Servers AS s
                      ON SJ.srvid = s.ServID
-            WHERE    s.active = 1
+            WHERE    s.IsActive = 1
                      AND sj.CatOverride = 0
 					 AND s.GetVersState = 1
             ORDER BY sj.srvid;
@@ -45,13 +45,13 @@ ORDER BY hist.run_date desc''' + ');
 
 		UPDATE dbo.SrvJobs
 		SET 
-		category = @CAT,
-		Lastresult = @RUNSTATUS,
+		JobCategory = @CAT,
+		LastOutcome = @RUNSTATUS,
 		LastRunDate = CAST(@LRD as DATE)
 		WHERE 
-		jid = ''' + CAST (@jid AS NVARCHAR (150)) + '''
+		JobID = ''' + CAST (@jid AS NVARCHAR (150)) + '''
 		AND
-		SRVID = ' + CAST (@SRVID AS NVARCHAR (150)) + '
+		SrvID = ' + CAST (@SRVID AS NVARCHAR (150)) + '
 		';
             SET @ERROR_CODE = 0;
             BEGIN TRY
@@ -61,13 +61,13 @@ ORDER BY hist.run_date desc''' + ');
                 SET @ERROR_CODE = ERROR_NUMBER();
                 SET @ERROR_MESS = ERROR_MESSAGE();
                 EXECUTE dbo.WriteErrorLog 4, @SRVID, @ERROR_CODE, @ERROR_MESS;
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetJobsState     = ERROR_NUMBER(),
                        GetJobsStateDesc = ERROR_MESSAGE()
                 WHERE  ServID = @SRVID;
             END CATCH
             IF @ERROR_CODE = 0
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetJobsState     = 1,
                        GetJobsStateDesc = 'Success'
                 WHERE  ServID = @SRVID;

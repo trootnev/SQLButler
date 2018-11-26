@@ -27,18 +27,18 @@ FETCH NEXT FROM JOBS
 INTO @JID, @JNAME, @CAT
 WHILE @@FETCH_STATUS = 0
 BEGIN
-	IF NOT EXISTS (SELECT 1 FROM DBO.SrvJobs WHERE SrvId =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND jid = @JID )
+	IF NOT EXISTS (SELECT 1 FROM dbo.SrvJobs WHERE SrvID =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND JobID = @JID )
 	Insert into dbo.SrvJobs
-	(srvid,
-	jid,
-	job_name)
+	(SrvID,
+	JobID,
+	JobName)
 	VALUES (' + CAST (@SRVID AS NVARCHAR (10)) + ', @JID,@JNAME)
 	
 	UPDATE dbo.SrvJobs
-	SET job_name = @JNAME
+	SET JobName = @JNAME
 	where Srvid = ' + CAST (@SRVID AS NVARCHAR (10)) + '
-	AND jid = @JID
-	AND job_name <> @JNAME 	
+	AND JobID = @JID
+	AND JobName <> @JNAME 	
 FETCH NEXT FROM JOBS
 INTO @JID, @JNAME, @CAT
 END
@@ -52,13 +52,13 @@ DEALLOCATE JOBS
                 SET @ERROR_CODE = ERROR_NUMBER();
                 SET @ERROR_MESS = ERROR_MESSAGE();
                 EXECUTE dbo.WriteErrorLog 4, @SRVID, @ERROR_CODE, @ERROR_MESS;
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetJobsState     = ERROR_NUMBER(),
                        GetJobsStateDesc = ERROR_MESSAGE()
                 WHERE  ServID = @SRVID;
             END CATCH
             IF @ERROR_CODE = 0
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetJobsState     = 1,
                        GetJobsStateDesc = 'Success'
                 WHERE  ServID = @SRVID;

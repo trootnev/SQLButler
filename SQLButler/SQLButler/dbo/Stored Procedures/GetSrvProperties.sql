@@ -1,18 +1,42 @@
 ﻿CREATE PROCEDURE [dbo].[GetSrvProperties]
 @SRVID INT NULL
-,@DEBUG bit = 0
+,@Debug bit = 0
 AS
 BEGIN
     SET NOCOUNT ON;
     DECLARE @Connstr AS NVARCHAR (100);
     DECLARE @SQLStr AS NVARCHAR (MAX);
     DECLARE @ACTIONTYPE AS INT;
+	DECLARE @Version NVARCHAR(200)
+	DECLARE @Plus nvarchar(max) = '';
     SET @ACTIONTYPE = 6;
     DECLARE @ERROR_CODE AS INT;
     DECLARE @ERROR_MESS AS NVARCHAR (400);
     SET @Connstr = (SELECT dbo.ConnStr(ServName)
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
+	SELECT @Version = CASE WHEN [Version] like '%2008 R2 (RTM)%' or Version like '%- 10.0%' or Version like '%- 9.0%' THEN 'Old'
+	ELSE 'New'
+	END
+	FROM dbo.Servers where ServId = @SRVID
+
+
+	IF @Version = 'NEW'
+	SET @Plus = 
+	'UNION ALL
+			
+	select ''''SQLServerSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
+		from sys.dm_server_services
+			where  filename like ''''%sqlservr.exe%'''' 
+	UNION ALL 
+
+	Select 
+	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
+		from sys.dm_server_services
+			where  filename like ''''%SQLAGENT.EXE%'''' 
+
+	'
+	
     SET @SQLStr = '
 DECLARE @t TABLE (pName nvarchar(255), [pValue] nvarchar(255))
 DECLARE @clustered NVARCHAR (10)
@@ -37,18 +61,9 @@ INSERT @result (pName, pValue)
 		where local_net_address is not null
 			AND protocol_type = ''''TSQL''''
 			AND net_transport = ''''TCP''''
-	UNION ALL
-			
-	select ''''SQLServerSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
-		from sys.dm_server_services
-			where  filename like ''''%sqlservr.exe%'''' 
-	UNION ALL 
-
-	Select 
-	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
-		from sys.dm_server_services
-			where  filename like ''''%SQLAGENT.EXE%'''' 
-
+	'
+	+@Plus+
+	'
 	UNION ALL 
 		SELECT ''''InstanceCollation'''' as [pName], CAST(ServerProperty(''''collation'''') as nvarchar(255))   as [pValue]
 
@@ -133,6 +148,12 @@ INSERT INTO [dbo].[InstanceProperties]
 
 END
 
+UPDATE dbo.InstanceProperties
+SET PropertyDate = GETDATE()
+WHERE SrvId = @SrvId
+	AND IsCurrent = 1
+	AND PropertyDate < DATEADD(HH,-1,GETDATE())
+
 FETCH NEXT FROM PAR
 INTO @p,@v
 
@@ -150,7 +171,7 @@ IsClustered = @clustered,
 IsHADREnabled = @ishadr
 
 WHERE ServID = @SrvID';
-   IF @debug = 0 
+   IF @Debug = 0 
    BEGIN
     BEGIN TRY
         EXEC(@SQLStr);

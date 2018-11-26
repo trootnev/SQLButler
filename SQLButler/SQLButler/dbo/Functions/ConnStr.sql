@@ -11,10 +11,10 @@ CASE
 FROM 
 dbo.Servers s
 LEFT JOIN dbo.Credentials c
-on c.CrId = s.CredID
+on c.CrID = s.CredID
 WHERE
  s.ServName = @servname
- and s.active = 1)
+ and s.IsActive = 1)
 
 END
 

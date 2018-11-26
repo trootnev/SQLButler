@@ -1,10 +1,10 @@
-﻿CREATE VIEW [dbo].[v_management_errors]
+﻿CREATE VIEW [dbo].[vManagementErrors]
 AS
-SELECT me.ActionDate AS Дата,
-       at.TypeDesc AS Действие,
-       s.ServName AS Сервер,
-       me.ErrorCode AS [Код Ошибки],
-       me.ErrorDesc AS [Описание ошибки]
+SELECT me.ActionDate AS ActionDate,
+       at.TypeDesc AS ActionType,
+       s.ServName AS ServerName,
+       me.ErrorCode AS ErrorCode,
+       me.ErrorDesc AS ErrorDescription
 FROM   dbo.ManagementErrors AS me
        INNER JOIN
        dbo.ActionTypes AS at

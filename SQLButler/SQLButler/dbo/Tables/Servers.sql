@@ -8,10 +8,9 @@
     [ServGroup]               INT            NULL,
     [Version]                 NVARCHAR (250) NULL,
     [CredID]                  INT            NULL,
-    [active]                  BIT            CONSTRAINT [DF_Servers_is active] DEFAULT ((0)) NULL,
+    [IsActive]                  BIT            CONSTRAINT [DF_Servers_is active] DEFAULT ((0)) NOT NULL,
     [SrvComment]              NVARCHAR (MAX) NULL,
-    [ip]                      NVARCHAR (20)  NULL,
-    [OwnerID]                 INT            NOT NULL,
+	[OwnerID]                 INT            NOT NULL,
     [GetVersState]            INT            NULL,
     [GetVersStateDesc]        NVARCHAR (150) NULL,
     [GetDBState]              INT            NULL,
@@ -27,7 +26,7 @@
     CONSTRAINT [PK_Servers] PRIMARY KEY CLUSTERED ([ServID] ASC),
     CONSTRAINT [FK_Servers_Cluster] FOREIGN KEY ([ClusterID]) REFERENCES [dbo].[Cluster] ([Clusterid]),
     CONSTRAINT [FK_Servers_Contacts] FOREIGN KEY ([OwnerID]) REFERENCES [dbo].[Contacts] ([ContactID]),
-    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrId]) ON DELETE CASCADE,
+    CONSTRAINT [FK_Servers_Credentials] FOREIGN KEY ([CredID]) REFERENCES [dbo].[Credentials] ([CrID]) ON DELETE CASCADE,
     CONSTRAINT [FK_Servers_Hosts] FOREIGN KEY ([HostID]) REFERENCES [dbo].[Hosts] ([HostID]) ON DELETE CASCADE,
     CONSTRAINT [FK_Servers_SrvGroup] FOREIGN KEY ([ServGroup]) REFERENCES [dbo].[SrvGroup] ([sgid]) ON DELETE SET NULL
 );
@@ -41,7 +40,7 @@ CREATE NONCLUSTERED INDEX [IX_Servers_ClusterID]
 
 
 GO
-CREATE NONCLUSTERED INDEX [IX_Servers_HostId]
+CREATE NONCLUSTERED INDEX [IX_Servers_HostID]
     ON [dbo].[Servers]([HostID] ASC);
 
 
@@ -53,4 +52,11 @@ CREATE NONCLUSTERED INDEX [IX_Servers_OwnerID]
 GO
 CREATE NONCLUSTERED INDEX [IX_Servers_ServGroup]
     ON [dbo].[Servers]([ServGroup] ASC);
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UC_Servers_ServName] ON [dbo].[Servers]
+(
+	[ServName] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
 
