@@ -13,12 +13,17 @@ BEGIN
     SET @SQLSTR = '
 DECLARE @DB NVARCHAR(50)
 DECLARE @RM TINYINT
+DECLARE @Owner NVARCHAR(50)
 DECLARE DBNAME CURSOR
 		FOR
-		SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''SELECT name,recovery_model FROM sys.databases''' + ');
+		SELECT * FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''select db.name,db.recovery_model,  sl.name as OwnerLogin
+
+ from sys.databases db
+
+ join sys.server_principals sl on db.owner_sid = sl.sid''' + ');
 OPEN DBNAME;
 FETCH NEXT FROM DBNAME
-INTO @DB, @RM
+INTO @DB, @RM,@Owner
 WHILE @@FETCH_STATUS = 0
 BEGIN
 	IF NOT EXISTS (SELECT DBNAME FROM DBO.SrvDB WHERE SrvId =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND DBNAME = @DB )
@@ -26,22 +31,24 @@ BEGIN
 	Insert into dbo.SrvDB
 	(SrvID,
 	DbName,
-	RecMod)
-	VALUES (' + CAST (@SRVID AS NVARCHAR (10)) + ', @DB,@RM)
+	RecMod,
+	OwnerLogin)
+	VALUES (' + CAST (@SRVID AS NVARCHAR (10)) + ', @DB,@RM,@Owner)
 	END
 	
 	UPDATE SrvDB
-	SET RecMod = @RM
+	SET RecMod = @RM,
+	OwnerLogin = @Owner
 	where Srvid = ' + CAST (@SRVID AS NVARCHAR (10)) + '
 	AND DBNAME = @DB
-	AND RecMod <> @RM
+	AND (RecMod <> @RM OR OwnerLogin <> @Owner)
 	
 	UPDATE dbo.Servers
 	Set GetDBState = 1,
 	GetDBStateDesc = ''Success''
 	WHERE ServID =  ' + CAST (@SRVID AS NVARCHAR (10)) + '	
 FETCH NEXT FROM DBNAME
-INTO @DB, @RM
+INTO @DB, @RM, @Owner
 END
 CLOSE DBNAME;
 DEALLOCATE DBNAME
