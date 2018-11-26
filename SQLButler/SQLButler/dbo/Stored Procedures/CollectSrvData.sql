@@ -13,7 +13,7 @@ BEGIN
     DECLARE SERV CURSOR
         FOR SELECT ServID
             FROM   Servers AS s
-            WHERE  s.ACTIVE = 1
+            WHERE  s.IsActive = 1
                    AND (ServID = @SRV
                         OR @SRV IS NULL);
 	CREATE TABLE  #PingStatus  
@@ -37,11 +37,12 @@ BEGIN
 				BEGIN
 					BEGIN TRY
 					
-						EXECUTE DBO.GetSrvVers @SID;
+						EXECUTE dbo.GetSrvVers @SID;
 						EXECUTE dbo.GetDbNames @SID;
 						EXECUTE [dbo].[GetJobs] @SID;
 						EXECUTE [dbo].[GetSrvProperties] @SID;
 						EXECUTE [dbo].[GetSrvConfigurations] @SID;
+						EXECUTE [dbo].[GetSrvTraceFlags] @SID;
 						EXECUTE [dbo].[CheckSrvSQLLogins] @SID;
 						EXECUTE [dbo].[GetSrvSQLAdmins] @SID;
 						EXECUTE [dbo].[GetSrvPrincipals] @SID;

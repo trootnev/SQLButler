@@ -27,7 +27,7 @@ where rbid.rk=1
 
 SELECT [RecID]
       ,[SrvID]
-      ,[batch_id]
+      ,[BatchID]
       ,[CollectionDate]
       ,[RoleType]
       ,[Role]
@@ -35,6 +35,6 @@ SELECT [RecID]
       ,[Login]
       ,[SID]
 from dbo.SrvRoleMembers (nolock) srm
-WHERE is_current = 1
+WHERE IsCurrent = 1
 
 

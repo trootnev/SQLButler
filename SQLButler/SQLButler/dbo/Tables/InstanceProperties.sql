@@ -14,3 +14,17 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [Ix_PropTypeId_IsCurrent]
+    ON [dbo].[InstanceProperties]([PropertyTypeID] ASC, [IsCurrent] ASC)
+    INCLUDE([SrvID], [PropertyStringValue], [PropertyDate]);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_InstanceProperties_SrvID]
+    ON [dbo].[InstanceProperties]([SrvID] ASC)
+    INCLUDE([PropertyTypeID], [PropertyStringValue]) WHERE ([IsCurrent]=(1));
+

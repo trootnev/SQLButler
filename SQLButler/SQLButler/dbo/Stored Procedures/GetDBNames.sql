@@ -26,7 +26,7 @@ FETCH NEXT FROM DBNAME
 INTO @DB, @RM,@Owner
 WHILE @@FETCH_STATUS = 0
 BEGIN
-	IF NOT EXISTS (SELECT DBNAME FROM DBO.SrvDB WHERE SrvId =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND DBNAME = @DB )
+	IF NOT EXISTS (SELECT DbName FROM dbo.SrvDB WHERE SrvID =' + CAST (@SRVID AS NVARCHAR (10)) + ' AND DbName = @DB )
 	BEGIN
 	Insert into dbo.SrvDB
 	(SrvID,
@@ -59,7 +59,7 @@ DEALLOCATE DBNAME
     BEGIN CATCH
         SET @ERROR_CODE = ERROR_NUMBER();
         SET @ERROR_MESS = ERROR_MESSAGE();
-        UPDATE DBO.Servers
+        UPDATE dbo.Servers
         SET    GetDBState     = ERROR_NUMBER(),
                GetDBStateDesc = ERROR_MESSAGE()
         WHERE  ServID = @SRVID;

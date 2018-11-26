@@ -4,9 +4,9 @@ RETURNS FLOAT (53)
 AS
 BEGIN
     DECLARE @SIZEGB AS FLOAT;
-    SET @SIZEGB = (SELECT SUM(size) * 8.0 / 1024 / 1024
+    SET @SIZEGB = (SELECT SUM(FileSize) * 8.0 / 1024 / 1024
                    FROM   DbFiles
-                   WHERE  [db_id] = @dbid);
+                   WHERE  [DbID] = @dbid);
     RETURN @SIZEGB;
 END
 

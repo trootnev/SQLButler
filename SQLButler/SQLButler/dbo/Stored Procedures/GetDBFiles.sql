@@ -21,7 +21,7 @@ BEGIN
                      INNER JOIN
                      dbo.Servers AS s
                      ON s.ServID = db.SrvID
-            WHERE    s.active = 1
+            WHERE    s.IsActive = 1
 			AND s.GetVersState = 1
             ORDER BY SrvID;
     OPEN DB;
@@ -50,18 +50,18 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 		BEGIN
 		
-		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where db_id =' + CAST (@DBID AS NVARCHAR (50)) + ' and inner_fileid = @fileid)
+		IF NOT EXISTS (SELECT 1 FROM dbo.DbFiles where DbID =' + CAST (@DBID AS NVARCHAR (50)) + ' and [InternalFileID] = @fileid)
 			INSERT INTO dbo.DbFiles
 			(
-			db_id,
-			inner_fileid,
-			type,
-			size,
-			maxsize,
-			growth,
-			is_percent_growth,
-			name,
-			filename,
+			[DbID],
+			[InternalFileID],
+			[FileType],
+			[FileSize],
+			[FileMaxSize],
+			[FileGrowth],
+			[IsPercentGrowth],
+			[FileLogicalName],
+			[FileName],
 			MeasureDate
 			)
 			VALUES
@@ -80,15 +80,15 @@ BEGIN
 		ELSE
 			UPDATE dbo.DbFiles
 			SET 
-				size = @size,
-				maxsize = @maxsize,
-				growth = @growth,
-				is_percent_growth = @ispctgrowth,
-				name = @name,
-				filename = @filename,
+				[FileSize] = @size,
+				[FileMaxSize] = @maxsize,
+				[FileGrowth] = @growth,
+				[IsPercentGrowth] = @ispctgrowth,
+				[FileLogicalName] = @name,
+				[FileName] = @filename,
 				measuredate = getdate()
-			WHERE db_id = ' + CAST (@DBID AS NVARCHAR (50)) + ' 
-			AND inner_fileid = @fileid
+			WHERE DbID = ' + CAST (@DBID AS NVARCHAR (50)) + ' 
+			AND [InternalFileID] = @fileid
 		
 		FETCH NEXT FROM FILES
 			INTO @fileid, @type, @size, @maxsize, @growth,@ispctgrowth, @name, @filename
@@ -103,7 +103,7 @@ BEGIN
                 SET @ERROR_CODE = ERROR_NUMBER();
                 SET @ERROR_MESS = ERROR_MESSAGE();
                 EXECUTE dbo.WriteErrorLog 3, @SRVID, @ERROR_CODE, @ERROR_MESS;
-                UPDATE DBO.Servers
+                UPDATE dbo.Servers
                 SET    GetDbFilesState     = @ERROR_CODE,
                        GetDbFilesStateDesc = @ERROR_MESS
                 WHERE  ServID = @SRVID;

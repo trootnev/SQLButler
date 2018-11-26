@@ -13,7 +13,7 @@ BEGIN
                     FROM   Servers AS s
                     WHERE  s.ServID = @SRVID);
     UPDATE dbo.InstanceConfiguration
-    SET    is_current = 0
+    SET    IsCurrent = 0
     WHERE  SrvID = @SrvID;
     SET @SQLStr = '
 DECLARE @BatchID uniqueidentifier = (SELECT NEWID())
@@ -22,16 +22,16 @@ INSERT INTO [dbo].[InstanceConfiguration]
            (
            [BatchID]
            ,[SrvID]
-           ,[configuration_id]
-           ,[name]
-           ,[value]
-           ,[minimum]
-           ,[maximum]
-           ,[value_in_use]
-           ,[description]
-           ,[is_dynamic]
-           ,[is_advanced]
-           ,[is_current])
+           ,[ConfigurationID]
+           ,[ConfigurationName]
+           ,[ConfigurationValue]
+           ,[ConfigurationMinimum]
+           ,[ConfigurationMaximum]
+           ,[ConfigurationValueInUse]
+           ,[ConfigurationDescription]
+           ,[IsDynamic]
+           ,[IsAdvanced]
+           ,[IsCurrent])
 
 SELECT
  @BatchID
@@ -62,9 +62,9 @@ SELECT * FROM sys.configurations
     DECLARE @D AS INT;
     SELECT @D = IntValue
     FROM   dbo.Settings
-    WHERE  [name] = 'ConfRetentionDays';
+    WHERE  [Name] = 'ConfRetentionDays';
     DELETE dbo.InstanceConfiguration
     WHERE  SrvID = @SRVID
-           AND Timestamp < DATEADD(DD, -@D, GETDATE());
+           AND CollectionDate < DATEADD(DD, -@D, GETDATE());
 END
 
