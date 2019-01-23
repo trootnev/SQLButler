@@ -1,10 +1,10 @@
 ﻿CREATE FUNCTION [dbo].[CalcDBSize]
 (@dbid INT = NULL)
-RETURNS FLOAT (53)
+RETURNS NUMERIC(18,3)
 AS
 BEGIN
-    DECLARE @SIZEGB AS FLOAT;
-    SET @SIZEGB = (SELECT SUM(FileSize) * 8.0 / 1024 / 1024
+    DECLARE @SIZEGB AS NUMERIC(18,3);
+    SET @SIZEGB = (SELECT SUM(CAST(FileSize as NUMERIC(18,3))) * 8.0 / 1024.0 / 1024.0
                    FROM   DbFiles
                    WHERE  [DbID] = @dbid);
     RETURN @SIZEGB;

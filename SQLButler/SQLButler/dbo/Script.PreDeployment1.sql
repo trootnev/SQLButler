@@ -9,3 +9,4 @@
                SELECT * FROM [$(TableName)]					
 --------------------------------------------------------------------------------------
 */
+--ALTER TABLE dbo.SrvDB DROP COLUMN DBSize

@@ -41,7 +41,7 @@ BEGIN
 	OwnerLogin = @Owner
 	where Srvid = ' + CAST (@SRVID AS NVARCHAR (10)) + '
 	AND DBNAME = @DB
-	AND (RecMod <> @RM OR OwnerLogin <> @Owner)
+	--AND (RecMod <> @RM OR OwnerLogin <> @Owner)
 	
 	UPDATE dbo.Servers
 	Set GetDBState = 1,

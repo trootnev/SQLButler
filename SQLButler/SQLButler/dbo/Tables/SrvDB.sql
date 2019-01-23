@@ -4,7 +4,6 @@
     [DbName]         NVARCHAR (50)  NULL,
     [DbComment]      NTEXT          NULL,
     [DbGroupID]        INT            NULL,
-    [DBSize]         AS             ([dbo].[CalcDBSize]([DbID])),
     [BackupNeeded]   BIT            CONSTRAINT [DF_SrvDB_BackupNeeded] DEFAULT ((0)) NULL,
     [BackupMod]      INT            NULL,
     [RecMod]         INT            NULL,
@@ -17,6 +16,7 @@
     [SLA]            INT            NULL,
     [Malfunction]    NVARCHAR(MAX)          NULL,
     [OwnerLogin] NVARCHAR(100) NULL, 
+	[DBSize]         AS             ([dbo].[CalcDBSize]([DbID]))
     CONSTRAINT [PK_SrvDB] PRIMARY KEY CLUSTERED ([DbID] ASC),
     CONSTRAINT [FK_SrvDB_DbGroup] FOREIGN KEY ([DbGroupID]) REFERENCES [dbo].[DbGroup] ([id]) ON DELETE SET NULL,
     CONSTRAINT [FK_SrvDB_RecModel] FOREIGN KEY ([RecMod]) REFERENCES [dbo].[RecModel] ([id]),

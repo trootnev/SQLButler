@@ -21,7 +21,7 @@ Select CASE GetVersState WHEN 1 THEN 'Ok' ELSE GetVersStateDesc END as Connectio
 ,CASE WHEN ip4.PropertyStringValue like '%VMWare%' or ip4.PropertyStringValue like '%Hyper%' THEN 'Virtual'
 ELSE 'Physical' end AS Hardware 
 ,s.SrvComment as InstanceDescription
-
+,s.Timestamp
 FROM dbo.Servers s
 JOIN dbo.Hosts h on s.HostID = h.HostID
 LEFT OUTER JOIN dbo.vInstanceProperties ip on s.ServID = ip.SrvID and ip.PropertyTypeName = 'DBEngineVersion'

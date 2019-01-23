@@ -29,7 +29,8 @@ SELECT s.ServID,
       s.GetJobsStateDesc,
        s.GetJobsDetailsState,
        s.GetJobsDetailsStateDesc,
-	   ip.PropertyDate as LastExaminedDate
+	   ip.PropertyDate as LastExaminedDate,
+	   s.Timestamp
 	   FROM   dbo.Servers s (nolock)
 	   JOIN dbo.Hosts h on h.HostID = s.HostID
        LEFT OUTER JOIN
