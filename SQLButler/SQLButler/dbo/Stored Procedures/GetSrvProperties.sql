@@ -34,17 +34,28 @@ BEGIN
 	''''SQLServerAgentSvcAccount'''' as [pName], CAST(service_account as nvarchar(255))   as [pValue]
 		from sys.dm_server_services
 			where  filename like ''''%SQLAGENT.EXE%'''' 
+	UNION ALL
+	SELECT
 
+	''''SQLServerSvcStartType'''' as [pName], CAST(startup_type_desc as nvarchar(255))   as [pValue]
+		from sys.dm_server_services
+			where  filename like ''''%sqlservr.exe%'''' 
+	UNION ALL
+
+	SELECT
+	''''SQLServerAgentSvcStartType'''' as [pName], CAST(startup_type_desc as nvarchar(255))   as [pValue]
+		from sys.dm_server_services
+			where  filename like ''''%SQLAGENT.EXE%'''' 
 	'
 	
     SET @SQLStr = '
 DECLARE @t TABLE (pName nvarchar(255), [pValue] nvarchar(255))
 DECLARE @clustered NVARCHAR (10)
 DECLARE @ishadr NVARCHAR(10)
-DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (50))+'
+DECLARE @SrvID INT = ' + CAST (@SRVID AS NVARCHAR (MAX))+'
 
 INSERT @t (pName, pValue)
-(SELECT pName,pValue FROM OPENROWSET(''SQLOLEDB'',' + '''' + @Connstr + '''' + ', ' + '''
+(SELECT pName,pValue FROM OPENROWSET(''SQLOLEDB'',' + '''' + CAST(@Connstr AS NVARCHAR(MAX)) + '''' + ', ' + '''
 
 SET FMTONLY OFF; SET NOCOUNT ON;
 
@@ -179,7 +190,7 @@ WHERE ServID = @SrvID';
     BEGIN CATCH
         SET @ERROR_CODE = ERROR_NUMBER();
         SET @ERROR_MESS = ERROR_MESSAGE();
-        --PRINT @SQLStr;
+        PRINT @SQLStr;
 		PRINT @ERROR_MESS
         EXECUTE dbo.WriteErrorLog 6, @SRVID, @ERROR_CODE, @ERROR_MESS;
     END CATCH
