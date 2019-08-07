@@ -64,5 +64,5 @@ VALUES (SOURCE.Name, SOURCE.IntValue, SOURCE.StringValue, SOURCE.Description);
 
 
 
-INSERT dbo.DbVersion (Version,DateInstalled) VALUES ('0.0.2 Beta',getdate())
+INSERT dbo.DbVersion (Version,DateInstalled) VALUES ('0.0.3 Beta',getdate())
 GO
